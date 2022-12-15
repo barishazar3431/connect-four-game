@@ -1,14 +1,20 @@
-import GameState from "./GameState.js";
+import GameBoard from './GameBoard.js';
 import config from './config.js';
+import HumanPlayer from './HumanPlayer.js';
 
-const board = new GameState(config.initialState);
+const board = new GameBoard(config.initialState);
 
+const playerOne = new HumanPlayer(board, 'X');
+const playerTwo = new HumanPlayer(board, 'O');
 
-board.addToken(1, 'X');
-console.log(board.toString());
+const players = [playerOne, playerTwo];
 
-board.addToken(2, 'O');
-console.log(board.toString());
+while (true) {
+  players.forEach((player) => {
+    console.log(`Player ${player.tokenType} plays...`);
 
-board.addToken(8, 'O');
-console.log(board.toString());
+    console.log(board.toString());
+    player.takeTurn();
+    console.log(board.toString());
+  });
+}

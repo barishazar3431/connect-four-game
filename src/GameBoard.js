@@ -1,11 +1,14 @@
-class GameState {
+class GameBoard {
   constructor(board = []) {
     this.board = board;
   }
 
   addToken(position, tokenType) {
-    const colIndex = position - 1;
+    if (position < 1 || position > this.board[0].length) {
+      throw new Error(`Position out of bound (${position})`);
+    }
 
+    const colIndex = position - 1;
     let rowIndex = 0;
 
     while (rowIndex < this.board.length && !this.board[rowIndex][colIndex]) {
@@ -13,6 +16,10 @@ class GameState {
     }
 
     this.board[--rowIndex][colIndex] = tokenType;
+  }
+
+  isGameOver() {
+    //TODO
   }
 
   toString() {
@@ -26,8 +33,13 @@ class GameState {
       string += '\n';
     }
 
+    // string += '  ';
+    for (let i = 1; i <= this.board[0].length; i++) {
+      string += `${i} `;
+    }
+
     return string;
   }
 }
 
-export default GameState;
+export default GameBoard;
