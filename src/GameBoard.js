@@ -19,22 +19,22 @@ class GameBoard {
   }
 
   isGameOver() {
-    for (let i = 0; i < this.board.length; i++) {
-      let horizontalCount = 0;
-      let tokenType = '';
-      for (let j = 0; j < this.board[i].length; j++) {
-        if (this.board[i][j] && this.board[i][j] === tokenType) {
-          horizontalCount++;
-        } else {
-          horizontalCount = 1;
-          tokenType = this.board[i][j];
-        }
-        if (horizontalCount === 4) {
-          return true;
-        }
-      }
+    // return this.board[0].every((slot) => slot !== 0);
+  }
+
+  getChildrenStates(tokenType) {
+    const childrenStates = [];
+    
+    for (let i = 0; i < this.board[0].length; i++) {
+      const newBoard = this.board.map(row => row.slice()); //Copy of current board array
+
+      const newGameState = new GameBoard(newBoard);
+      newGameState.addToken(i + 1, tokenType);
+
+      childrenStates.push(newGameState);
     }
-    return false;
+
+    return childrenStates;
   }
 
   toString() {

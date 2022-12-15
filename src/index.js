@@ -18,7 +18,7 @@ function playGame() {
       console.log(`Player ${player.tokenType} plays...`);
       console.log(board.toString());
       player.takeTurn();
-      console.log(board.toString());
+      // console.log(board.toString());
 
       if (board.isGameOver()) {
         console.log(`Player, ${player.tokenType} won the game...`);
@@ -29,3 +29,6 @@ function playGame() {
 }
 
 playGame();
+
+// const childrenStates = board.getChildrenStates('X');
+// childrenStates.forEach(child => console.log(child.toString()));
