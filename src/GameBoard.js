@@ -19,7 +19,22 @@ class GameBoard {
   }
 
   isGameOver() {
-    //TODO
+    for (let i = 0; i < this.board.length; i++) {
+      let horizontalCount = 0;
+      let tokenType = '';
+      for (let j = 0; j < this.board[i].length; j++) {
+        if (this.board[i][j] && this.board[i][j] === tokenType) {
+          horizontalCount++;
+        } else {
+          horizontalCount = 1;
+          tokenType = this.board[i][j];
+        }
+        if (horizontalCount === 4) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   toString() {
