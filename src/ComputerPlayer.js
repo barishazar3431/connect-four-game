@@ -5,13 +5,22 @@ class ComputerPlayer {
   }
 
   takeTurn() {
-    const position = Math.floor(Math.random() * 7) + 1;
+    const position = Math.floor(Math.random() * 7);
 
-    try {
-      this.board.addToken(position, this.tokenType);
-    } catch (err) {
-      this.takeTurn();
-    }
+    const childrenStates = this.board.getChildrenStates(this.tokenType);
+    childrenStates.sort((a, b) => {
+      return a.numOfAdjacentTokens(this.tokenType) - b.numOfAdjacentTokens(this.tokenType);
+    })
+
+    const board = childrenStates[0];
+
+    this.board.setGameBoard(board);
+
+    // try {
+    //   this.board.addToken(position, this.tokenType);
+    // } catch (err) {
+    //   this.takeTurn();
+    // }
   }
 }
 

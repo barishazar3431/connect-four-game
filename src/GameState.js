@@ -1,4 +1,4 @@
-class GameBoard {
+class GameState {
   constructor(board = []) {
     this.board = board;
   }
@@ -19,22 +19,30 @@ class GameBoard {
   }
 
   isGameOver() {
-    // return this.board[0].every((slot) => slot !== 0);
+    return this.board[0].every((slot) => slot !== 0);
+  }
+
+  setGameBoard(gameBoard) {
+    this.board = gameBoard.board;
   }
 
   getChildrenStates(tokenType) {
     const childrenStates = [];
-    
-    for (let i = 0; i < this.board[0].length; i++) {
-      const newBoard = this.board.map(row => row.slice()); //Copy of current board array
 
-      const newGameState = new GameBoard(newBoard);
+    for (let i = 0; i < this.board[0].length; i++) {
+      const newBoard = this.board.map((row) => row.slice()); //Copy of current board array
+
+      const newGameState = new GameState(newBoard);
       newGameState.addToken(i + 1, tokenType);
 
       childrenStates.push(newGameState);
     }
 
     return childrenStates;
+  }
+
+  numOfAdjacentTokens(tokenType) {
+    //TODO 
   }
 
   toString() {
@@ -57,4 +65,9 @@ class GameBoard {
   }
 }
 
-export default GameBoard;
+export const tokenTypes = {
+  X: 'X',
+  O: 'O',
+};
+
+export default GameState;
