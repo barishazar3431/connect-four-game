@@ -1,9 +1,9 @@
-class GameState {
+class GameNode {
   constructor(board = []) {
     this.board = board;
   }
 
-  addToken(position, tokenType) {
+  addTokenToBoard(position, tokenType) {
     if (position < 1 || position > this.board[0].length) {
       throw new Error(`Position out of bound (${position})`);
     }
@@ -18,31 +18,25 @@ class GameState {
     this.board[--rowIndex][colIndex] = tokenType;
   }
 
-  isGameOver() {
-    return this.board[0].every((slot) => slot !== 0);
-  }
-
-  setGameBoard(gameBoard) {
-    this.board = gameBoard.board;
-  }
-
-  getChildrenStates(tokenType) {
-    const childrenStates = [];
+  getChildrenGameNodes(tokenType) {
+    const childrenGameNodes = [];
 
     for (let i = 0; i < this.board[0].length; i++) {
       const newBoard = this.board.map((row) => row.slice()); //Copy of current board array
+      const newGameNode = new GameNode(newBoard);
+      newGameNode.addTokenToBoard(i + 1, tokenType);
 
-      const newGameState = new GameState(newBoard);
-      newGameState.addToken(i + 1, tokenType);
-
-      childrenStates.push(newGameState);
+      childrenGameNodes.push(newGameNode);
     }
+    return childrenGameNodes;
+  }
 
-    return childrenStates;
+  isGameOver() { //Not complete!!
+    return this.board[0].every((slot) => slot !== 0);
   }
 
   numOfAdjacentTokens(tokenType) {
-    //TODO 
+    //TODO
   }
 
   toString() {
@@ -70,4 +64,4 @@ export const tokenTypes = {
   O: 'O',
 };
 
-export default GameState;
+export default GameNode;

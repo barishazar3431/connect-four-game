@@ -2,8 +2,8 @@ import promptSync from 'prompt-sync';
 const prompt = promptSync();
 
 class HumanPlayer {
-  constructor(board, tokenType) {
-    this.board = board;
+  constructor(gameNode, tokenType) {
+    this.gameNode = gameNode;
     this.tokenType = tokenType;
   }
 
@@ -11,7 +11,7 @@ class HumanPlayer {
     const position = prompt('Position: ');
 
     try {
-      this.board.addToken(position, this.tokenType);
+      this.gameNode.addTokenToBoard(position, this.tokenType);
     } catch (err) {
       console.log(err.message);
       console.log('Try again.');
