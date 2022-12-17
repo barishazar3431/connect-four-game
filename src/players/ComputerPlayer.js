@@ -5,14 +5,16 @@ class ComputerPlayer {
   }
 
   takeTurn() {
-    const position = Math.floor(Math.random() * 7);
-
     const childrenGameNodes = this.gameNode.getChildrenGameNodes(
       this.tokenType
     );
-    const newBoard = childrenGameNodes[position].board;
+
+    const newBoardIndex = Math.floor(Math.random() * childrenGameNodes.length);
+    const newBoard = childrenGameNodes[newBoardIndex].board;
 
     this.gameNode.board = newBoard;
+
+    return newBoardIndex + 1;
   }
 }
 

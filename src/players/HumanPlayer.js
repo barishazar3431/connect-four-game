@@ -17,6 +17,8 @@ class HumanPlayer {
       console.log('Try again.');
       this.takeTurn();
     }
+
+    return position;
   }
 }
 
