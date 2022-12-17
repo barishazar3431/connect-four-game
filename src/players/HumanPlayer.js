@@ -1,10 +1,10 @@
 import promptSync from 'prompt-sync';
+import Player from './Player.js';
 const prompt = promptSync();
 
-class HumanPlayer {
+export default class HumanPlayer extends Player {
   constructor(gameNode, tokenType) {
-    this.gameNode = gameNode;
-    this.tokenType = tokenType;
+    super(gameNode, tokenType);
   }
 
   takeTurn() {
@@ -18,8 +18,5 @@ class HumanPlayer {
       this.takeTurn();
     }
 
-    return position;
   }
 }
-
-export default HumanPlayer;

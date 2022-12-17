@@ -14,9 +14,6 @@ const initialBoard = [
 ];
 
 const gameNode = new GameNode(initialBoard);
-
-console.log(gameNode.isWinning(tokenTypes.X));
-
 const playerOne = new HumanPlayer(gameNode, tokenTypes.X);
 const playerTwo = new HumanPlayer(gameNode, tokenTypes.O);
 
@@ -29,10 +26,11 @@ export default function playGame() {
   while (true) {
     for (const player of players) {
       console.log(`\n\nPlayer ${player.tokenType} plays...`);
-      console.log(gameNode.toString());
-      const position = player.takeTurn();
+      
+      console.log(player.gameNode.toString());
+      player.takeTurn();
 
-      if (gameNode.isWinning(player.tokenType)) {
+      if (player.isWinning(player.tokenType)) {
         console.log(gameNode.toString());
         console.log(`Player, ${player.tokenType} won the game...`);
         return;

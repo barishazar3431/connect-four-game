@@ -1,7 +1,8 @@
-class ComputerPlayer {
+import Player from './Player.js';
+
+export default class ComputerPlayer extends Player {
   constructor(gameNode, tokenType) {
-    this.gameNode = gameNode;
-    this.tokenType = tokenType;
+    super(gameNode, tokenType);
   }
 
   takeTurn() {
@@ -13,9 +14,5 @@ class ComputerPlayer {
     const newBoard = childrenGameNodes[newBoardIndex].board;
 
     this.gameNode.board = newBoard;
-
-    return newBoardIndex + 1;
   }
 }
-
-export default ComputerPlayer;
