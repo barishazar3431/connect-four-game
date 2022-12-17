@@ -1,4 +1,4 @@
-import GameNode, { tokenTypes } from './GameBoard.js';
+import GameNode, { tokenTypes } from './GameNode.js';
 import HumanPlayer from './players/HumanPlayer.js';
 import ComputerPlayer from './players/ComputerPlayer.js';
 
