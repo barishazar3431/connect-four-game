@@ -37,6 +37,48 @@ class GameNode {
     return this.board[0][position - 1] !== 0;
   }
 
+  minimax(gameNode, depth, isMaximizing) {
+    if (gameNode.isDraw()) {
+      return 0;
+    }
+
+    if (gameNode.isWinning(tokenTypes.X)) {
+      return Number.POSITIVE_INFINITY;
+    }
+
+    if (gameNode.isWinning(tokenTypes.O)) {
+      return Number.NEGATIVE_INFINITY;
+    }
+
+    if (depth === 0) {
+      return (
+        gameNode.totalMaxAdjacentTokenCounts(tokenTypes.X) -
+        gameNode.totalMaxAdjacentTokenCounts(tokenTypes.O)
+      );
+    }
+
+    if (isMaximizing) {
+      let maxEvaluation = Number.NEGATIVE_INFINITY;
+
+      const childrenNodes = gameNode.getChildrenGameNodes(tokenTypes.X);
+      for (const childNode of childrenNodes) {
+        const evaluation = this.minimax(childNode, depth - 1, false);
+        maxEvaluation = Math.max(maxEvaluation, evaluation);
+      }
+      return maxEvaluation;
+    } else {
+      let minEvaluation = Number.POSITIVE_INFINITY;
+
+      const childrenNodes = gameNode.getChildrenGameNodes(tokenTypes.O);
+      for (const childNode of childrenNodes) {
+        const evaluation = this.minimax(childNode, depth - 1, true);
+        minEvaluation = Math.min(minEvaluation, evaluation);
+      }
+
+      return minEvaluation;
+    }
+  }
+
   getChildrenGameNodes(tokenType) {
     const childrenGameNodes = [];
 
@@ -70,9 +112,14 @@ class GameNode {
     );
   }
 
-  // getAdjacentTokenCount(tokenType) {
-  //   return this.maxAdjacentHorizontalTokenCount(tokenType);
-  // }
+  totalMaxAdjacentTokenCounts(tokenType) {
+    return (
+      Math.pow(this.maxAdjacentHorizontalTokenCount(tokenType), 2) +
+      Math.pow(this.maxAdjacentVerticalTokenCount(tokenType), 2) +
+      Math.pow(this.maxAdjacentDiagonalTokenCount(tokenType), 2) +
+      Math.pow(this.maxAdjacentAntiDiagonalTokenCount(tokenType), 2)
+    );
+  }
 
   maxAdjacentHorizontalTokenCount(tokenType) {
     let maxCount = 0;
@@ -133,7 +180,7 @@ class GameNode {
       for (
         let j = this.board[i].length - 1, k = i;
         j >= 0 && k < this.board.length;
-        j++, k++
+        j--, k++
       ) {
         if (this.board[k][j] === tokenType) {
           adjCount++;
@@ -167,11 +214,11 @@ class GameNode {
 
 export const tokenTypes = {
   X: {
-    weight: 1,
+    isMaximizing: true,
     token: 'X',
   },
   O: {
-    weight: -1,
+    isMaximizing: false,
     token: 'O',
   },
 };
