@@ -55,13 +55,95 @@ class GameNode {
     return childrenGameNodes;
   }
 
-  isGameOver() {
-    //Not complete!!
+  isDraw() {
     return this.board[0].every((slot, i) => this.isPositionFull(i + 1));
   }
 
-  numOfAdjacentTokens(tokenType) {
-    //TODO
+  isWinning(tokenType) {
+    return (
+      Math.max(
+        this.maxAdjacentHorizontalTokenCount(tokenType),
+        this.maxAdjacentVerticalTokenCount(tokenType),
+        this.maxAdjacentDiagonalTokenCount(tokenType),
+        this.maxAdjacentAntiDiagonalTokenCount(tokenType)
+      ) >= 4
+    );
+  }
+
+  // getAdjacentTokenCount(tokenType) {
+  //   return this.maxAdjacentHorizontalTokenCount(tokenType);
+  // }
+
+  maxAdjacentHorizontalTokenCount(tokenType) {
+    let maxCount = 0;
+    for (let i = 0; i < this.board.length; i++) {
+      let adjCount = 0;
+      for (let j = 0; j < this.board[i].length; j++) {
+        if (this.board[i][j] === tokenType) {
+          adjCount++;
+          maxCount = Math.max(maxCount, adjCount);
+        } else {
+          adjCount = 0;
+        }
+      }
+    }
+    return maxCount;
+  }
+
+  maxAdjacentVerticalTokenCount(tokenType) {
+    let maxCount = 0;
+    for (let i = 0; i < this.board[0].length; i++) {
+      let adjCount = 0;
+      for (let j = 0; j < this.board.length; j++) {
+        if (this.board[j][i] === tokenType) {
+          adjCount++;
+          maxCount = Math.max(maxCount, adjCount);
+        } else {
+          adjCount = 0;
+        }
+      }
+    }
+    return maxCount;
+  }
+
+  maxAdjacentDiagonalTokenCount(tokenType) {
+    let maxCount = 0;
+    for (let i = 0; i < this.board.length; i++) {
+      let adjCount = 0;
+      for (
+        let j = 0, k = i;
+        j < this.board[i].length && k < this.board.length;
+        j++, k++
+      ) {
+        if (this.board[k][j] === tokenType) {
+          adjCount++;
+          maxCount = Math.max(maxCount, adjCount);
+        } else {
+          adjCount = 0;
+        }
+      }
+    }
+    return maxCount;
+  }
+
+  maxAdjacentAntiDiagonalTokenCount(tokenType) {
+    let maxCount = 0;
+    for (let i = 0; i < this.board.length; i++) {
+      let adjCount = 0;
+      for (
+        let j = this.board[i].length - 1, k = i;
+        j >= 0 && k < this.board.length;
+        j++, k++
+      ) {
+        if (this.board[k][j] === tokenType) {
+          adjCount++;
+          maxCount = Math.max(maxCount, adjCount);
+        } else {
+          adjCount = 0;
+        }
+      }
+    }
+    return maxCount;
   }
 
   toString() {
@@ -70,7 +152,7 @@ class GameNode {
     for (let i = 0; i < this.board.length; i++) {
       for (let j = 0; j < this.board[0].length; j++) {
         const boardValue = this.board[i][j];
-        string += `${boardValue === 0 ? ' ' : boardValue}|`;
+        string += `${boardValue === 0 ? ' ' : boardValue.token}|`;
       }
       string += '\n';
     }
@@ -84,8 +166,14 @@ class GameNode {
 }
 
 export const tokenTypes = {
-  X: 'X',
-  O: 'O',
+  X: {
+    weight: 1,
+    token: 'X',
+  },
+  O: {
+    weight: -1,
+    token: 'O',
+  },
 };
 
 export default GameNode;
