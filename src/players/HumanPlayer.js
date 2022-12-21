@@ -11,12 +11,11 @@ export default class HumanPlayer extends Player {
     const position = prompt('Position: ');
 
     try {
-      this.gameNode.addTokenToBoard(position, this.tokenType);
+      this.gameBoard.addTokenToBoard(position, this.tokenType);
     } catch (err) {
       console.log(err.message);
       console.log('Try again.');
       this.takeTurn();
     }
-
   }
 }

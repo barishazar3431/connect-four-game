@@ -1,4 +1,4 @@
-import GameNode, { tokenTypes } from './GameNode.js';
+import GameBoard, { tokenTypes } from './GameBoard.js';
 import HumanPlayer from './players/HumanPlayer.js';
 import ComputerPlayer from './players/ComputerPlayer.js';
 
@@ -13,47 +13,33 @@ const initialBoard = [
   [0, 0, 0, 0, 0, 0, 0],
 ];
 
-const gameNode = new GameNode(initialBoard);
+const gameBoard = new GameBoard(initialBoard);
 
-const playerOne = new HumanPlayer(gameNode, tokenTypes.X);
-const playerTwo = new HumanPlayer(gameNode, tokenTypes.O);
+// console.log(gameBoard.isWinning(tokenTypes.X));
 
-const computerPlayerOne = new ComputerPlayer(gameNode, tokenTypes.O, 1);
-const computerPlayerTwo = new ComputerPlayer(gameNode, tokenTypes.X, 2);
+const playerOne = new HumanPlayer(gameBoard, tokenTypes.X);
+const playerTwo = new HumanPlayer(gameBoard, tokenTypes.O);
 
-const players = [computerPlayerTwo, computerPlayerOne];
+const computerPlayerOne = new ComputerPlayer(gameBoard, tokenTypes.O, 0);
+const computerPlayerTwo = new ComputerPlayer(gameBoard, tokenTypes.X, 5);
+
+const players = [computerPlayerOne, playerOne];
 
 export default function playGame() {
   while (true) {
     for (const player of players) {
       console.log(`\n\nPlayer ${player.tokenType.token} plays...`);
 
-      console.log(player.gameNode.toString());
-      // console.log(
-      //   gameNode.maxAdjacentHorizontalTokenCount(player.tokenType),
-      //   player.tokenType.token
-      // );
-      // console.log(
-      //   gameNode.maxAdjacentVerticalTokenCount(player.tokenType),
-      //   player.tokenType.token
-      // );
-      // console.log(
-      //   gameNode.maxAdjacentDiagonalTokenCount(player.tokenType),
-      //   player.tokenType.token
-      // );
-      // console.log(
-      //   gameNode.maxAdjacentAntiDiagonalTokenCount(player.tokenType),
-      //   player.tokenType.token
-      // );
+      console.log(player.gameBoard.toString());
       player.takeTurn();
 
-      if (gameNode.isWinning(player.tokenType)) {
-        console.log(gameNode.toString());
+      if (gameBoard.isWinning(player.tokenType)) {
+        console.log(gameBoard.toString());
         console.log(`Player, ${player.tokenType.token} won the game...`);
         return;
       }
 
-      if (gameNode.isDraw()) {
+      if (gameBoard.isDraw()) {
         console.log('DRAWWWWW');
         return;
       }

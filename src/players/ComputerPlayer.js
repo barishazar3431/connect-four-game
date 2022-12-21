@@ -1,18 +1,16 @@
-import { tokenTypes } from '../GameNode.js';
 import Player from './Player.js';
 
 export default class ComputerPlayer extends Player {
-  constructor(gameNode, tokenType, depth) {
-    super(gameNode, tokenType);
+  constructor(gameBoard, tokenType, depth) {
+    super(gameBoard, tokenType);
     this.isMaximizing = tokenType.isMaximizing;
     this.depth = depth;
   }
 
-
   takeTurn() {
-    const childrenGameNodes = this.gameNode.getChildrenGameNodes(
+    const childrenGameNodes = this.gameBoard.getChildrenBoards(
       this.tokenType,
-      this.gameNode.board
+      this.gameBoard.board
     );
 
     let minEval = Number.POSITIVE_INFINITY;
@@ -20,13 +18,9 @@ export default class ComputerPlayer extends Player {
     let maxIndex = 0;
     let minIndex = 0;
     childrenGameNodes.forEach((childNode, i) => {
-      const evaluation = this.gameNode.minimax(childNode, this.depth, this.isMaximizing);
-      console.log(evaluation)
-      // console.log(
-      //   childNode.totalMaxAdjacentTokenCounts(tokenTypes.X) -
-      //     childNode.totalMaxAdjacentTokenCounts(tokenTypes.O)
-      // );
-      // console.log(childNode.toString())
+      const evaluation = childNode.minimax(this.depth, this.isMaximizing);
+      console.log(evaluation);
+
       if (evaluation > maxEval) {
         maxEval = evaluation;
         maxIndex = i;
@@ -45,6 +39,6 @@ export default class ComputerPlayer extends Player {
       newBoard = childrenGameNodes[minIndex].board;
     }
 
-    this.gameNode.board = newBoard;
+    this.gameBoard.board = newBoard;
   }
 }

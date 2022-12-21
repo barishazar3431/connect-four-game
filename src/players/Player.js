@@ -1,6 +1,6 @@
 export default class Player {
   constructor(gameNode, tokenType) {
-    this.gameNode = gameNode;
+    this.gameBoard = gameNode;
     this.tokenType = tokenType;
   }
 }
