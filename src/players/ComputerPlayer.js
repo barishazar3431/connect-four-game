@@ -1,44 +1,31 @@
 import Player from './Player.js';
 
 export default class ComputerPlayer extends Player {
-  constructor(gameBoard, tokenType, depth) {
-    super(gameBoard, tokenType);
-    this.isMaximizing = tokenType.isMaximizing;
+  constructor(gameBoard, playerType, depth) {
+    super(gameBoard, playerType);
     this.depth = depth;
+    this.isMaximizing = this.playerType === 'X';
   }
 
   takeTurn() {
-    const childrenGameNodes = this.gameBoard.getChildrenBoards(
-      this.tokenType,
-      this.gameBoard.board
-    );
+    const bestChild = this.getBestChild();
 
-    let minEval = Number.POSITIVE_INFINITY;
-    let maxEval = Number.NEGATIVE_INFINITY;
-    let maxIndex = 0;
-    let minIndex = 0;
-    childrenGameNodes.forEach((childNode, i) => {
-      const evaluation = childNode.minimax(this.depth, this.isMaximizing);
-      console.log(evaluation);
+    this.gameBoard.board = bestChild.board;
+  }
 
-      if (evaluation > maxEval) {
-        maxEval = evaluation;
-        maxIndex = i;
-      }
-
-      if (evaluation < minEval) {
-        minEval = evaluation;
-        minIndex = i;
-      }
+  getBestChild() {
+    const childrenBoards = this.gameBoard.getChildrenBoards(this.playerType);
+    childrenBoards.forEach((child) => {
+      const score = child.minimax(this.depth, this.isMaximizing);
+      child.minimaxScore = score;
     });
 
-    let newBoard;
-    if (this.isMaximizing) {
-      newBoard = childrenGameNodes[maxIndex].board;
-    } else {
-      newBoard = childrenGameNodes[minIndex].board;
-    }
+    childrenBoards.sort((a, b) => b.minimaxScore - a.minimaxScore);
 
-    this.gameBoard.board = newBoard;
+    if (this.isMaximizing) {
+      return childrenBoards[0];
+    } else {
+      return childrenBoards[childrenBoards.length - 1];
+    }
   }
 }

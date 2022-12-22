@@ -3,15 +3,15 @@ import Player from './Player.js';
 const prompt = promptSync();
 
 export default class HumanPlayer extends Player {
-  constructor(gameNode, tokenType) {
-    super(gameNode, tokenType);
+  constructor(gameNode, playerType) {
+    super(gameNode, playerType);
   }
 
   takeTurn() {
     const position = prompt('Position: ');
 
     try {
-      this.gameBoard.addTokenToBoard(position, this.tokenType);
+      this.gameBoard.addTokenToBoard(position, this.playerType);
     } catch (err) {
       console.log(err.message);
       console.log('Try again.');

@@ -1,6 +1,11 @@
 export default class Player {
-  constructor(gameNode, tokenType) {
+  constructor(gameNode, playerType) {
     this.gameBoard = gameNode;
-    this.tokenType = tokenType;
+    this.playerType = playerType;
   }
 }
+
+export const  playerTypes = {
+  maximizing: 'X',
+  minimizing: 'O',
+};

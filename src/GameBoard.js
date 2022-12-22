@@ -1,9 +1,11 @@
+import { playerTypes } from "./players/Player.js";
+
 export default class GameBoard {
   constructor(board = []) {
     this.board = board;
   }
 
-  addTokenToBoard(position, tokenType) {
+  addTokenToBoard(position, playerType) {
     if (this.isPositionOutOfBounds(position)) {
       throw new Error(`Position out of bound (${position})`);
     }
@@ -15,7 +17,7 @@ export default class GameBoard {
     const colIndex = position - 1;
     const rowIndex = this.getRowIndexOfNewToken(position);
 
-    this.board[rowIndex][colIndex] = tokenType.token;
+    this.board[rowIndex][colIndex] = playerType;
   }
 
   getRowIndexOfNewToken(position) {
@@ -52,12 +54,12 @@ export default class GameBoard {
   isGameOver() {
     return (
       this.isDraw() ||
-      this.isWinning(tokenTypes.X) ||
-      this.isWinning(tokenTypes.O)
+      this.isWinning(playerTypes.maximizing) ||
+      this.isWinning(playerTypes.minimizing)
     );
   }
 
-  getChildrenBoards(tokenType) {
+  getChildrenBoards(playerType) {
     const childrenBoards = [];
 
     for (let i = 0; i < this.board[0].length; i++) {
@@ -69,7 +71,7 @@ export default class GameBoard {
       const newBoard = this.board.map((row) => row.slice()); //Copy of current board array
 
       const newBoardClass = new GameBoard(newBoard);
-      newBoardClass.addTokenToBoard(i + 1, tokenType);
+      newBoardClass.addTokenToBoard(i + 1, playerType);
 
       childrenBoards.push(newBoardClass);
     }
@@ -80,11 +82,11 @@ export default class GameBoard {
     return this.board[0].every((slot, i) => this.isPositionFull(i + 1));
   }
 
-  isWinning(tokenType) {
+  isWinning(playerType) {
     let maxScore = 0;
     for (let i = 0; i < this.board.length; i++) {
       for (let j = 0; j < this.board[i].length; j++) {
-        if (this.board[i][j] === tokenType.token) {
+        if (this.board[i][j] === playerType) {
           maxScore = Math.max(
             maxScore,
             this.verticalScore(i, j),
@@ -98,11 +100,11 @@ export default class GameBoard {
     return maxScore >= 4;
   }
 
-  calculateScore(tokenType) {
+  calculateScore(playerType) {
     let sum = 0;
     for (let i = 0; i < this.board.length; i++) {
       for (let j = 0; j < this.board[i].length; j++) {
-        if (this.board[i][j] === tokenType.token) {
+        if (this.board[i][j] === playerType) {
           sum += Math.pow(this.horizontalScore(i, j), 3);
           sum += Math.pow(this.verticalScore(i, j), 3);
           sum += Math.pow(this.diagonalScore(i, j), 3);
@@ -114,28 +116,28 @@ export default class GameBoard {
   }
 
   minimax(depth, isMaximizing) {
-    if (this.isDraw()) {
-      return 0;
-    }
+    // if (this.isDraw()) {
+    //   return 0;
+    // }
 
-    if (this.isWinning(tokenTypes.X)) {
-      return 20 * this.emptySlotCount();
-    }
+    // if (this.isWinning(playerTypes.maximizing)) {
+    //   return 20 * this.emptySlotCount();
+    // }
 
-    if (this.isWinning(tokenTypes.O)) {
-      return -20 * this.emptySlotCount();
-    }
+    // if (this.isWinning(playerTypes.minimizing)) {
+    //   return -20 * this.emptySlotCount();
+    // }
 
-    if (depth === 0) {
+    if (depth === 0 || this.isGameOver()) {
       return (
-        this.calculateScore(tokenTypes.X) - this.calculateScore(tokenTypes.O)
+        this.calculateScore(playerTypes.maximizing) - this.calculateScore(playerTypes.minimizing)
       );
     }
 
     if (isMaximizing) {
       let maxEvaluation = Number.NEGATIVE_INFINITY;
 
-      const childrenNodes = this.getChildrenBoards(tokenTypes.X);
+      const childrenNodes = this.getChildrenBoards(playerTypes.maximizing);
       for (const childNode of childrenNodes) {
         const evaluation = childNode.minimax(depth - 1, false);
         maxEvaluation = Math.max(maxEvaluation, evaluation);
@@ -144,7 +146,7 @@ export default class GameBoard {
     } else {
       let minEvaluation = Number.POSITIVE_INFINITY;
 
-      const childrenNodes = this.getChildrenBoards(tokenTypes.O);
+      const childrenNodes = this.getChildrenBoards(playerTypes.minimizing);
       for (const childNode of childrenNodes) {
         const evaluation = childNode.minimax(depth - 1, true);
         minEvaluation = Math.min(minEvaluation, evaluation);
@@ -368,13 +370,4 @@ export default class GameBoard {
   }
 }
 
-export const tokenTypes = {
-  X: {
-    isMaximizing: true,
-    token: 'X',
-  },
-  O: {
-    isMaximizing: false,
-    token: 'O',
-  },
-};
+
