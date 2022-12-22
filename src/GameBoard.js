@@ -103,10 +103,10 @@ export default class GameBoard {
     for (let i = 0; i < this.board.length; i++) {
       for (let j = 0; j < this.board[i].length; j++) {
         if (this.board[i][j] === tokenType.token) {
-          sum += this.horizontalScore(i, j);
-          sum += this.verticalScore(i, j);
-          sum += this.diagonalScore(i, j);
-          sum += this.antiDiagonalScore(i, j);
+          sum += Math.pow(this.horizontalScore(i, j), 3);
+          sum += Math.pow(this.verticalScore(i, j), 3);
+          sum += Math.pow(this.diagonalScore(i, j), 3);
+          sum += Math.pow(this.antiDiagonalScore(i, j), 3);
         }
       }
     }
@@ -114,19 +114,19 @@ export default class GameBoard {
   }
 
   minimax(depth, isMaximizing) {
-    // if (this.isDraw()) {
-    //   return 0;
-    // }
+    if (this.isDraw()) {
+      return 0;
+    }
 
-    // if (this.isWinning(tokenTypes.X)) {
-    //   return this.emptySlotCount() * this.evaluationFunction();
-    // }
+    if (this.isWinning(tokenTypes.X)) {
+      return 20 * this.emptySlotCount();
+    }
 
-    // if (this.isWinning(tokenTypes.O)) {
-    //   return -1 * this.evaluationFunction() * this.emptySlotCount();
-    // }
+    if (this.isWinning(tokenTypes.O)) {
+      return -20 * this.emptySlotCount();
+    }
 
-    if (depth === 0 || this.isGameOver()) {
+    if (depth === 0) {
       return (
         this.calculateScore(tokenTypes.X) - this.calculateScore(tokenTypes.O)
       );
@@ -341,7 +341,6 @@ export default class GameBoard {
 
     const adjacentCount = highI - lowI - 1;
     const potentialCount = highIFast - lowIFast - 1;
-
 
     if (potentialCount < 4) {
       return 0;

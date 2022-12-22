@@ -23,7 +23,7 @@ const playerTwo = new HumanPlayer(gameBoard, tokenTypes.O);
 const computerPlayerOne = new ComputerPlayer(gameBoard, tokenTypes.O, 0);
 const computerPlayerTwo = new ComputerPlayer(gameBoard, tokenTypes.X, 5);
 
-const players = [computerPlayerOne, playerOne];
+const players = [playerTwo, computerPlayerTwo];
 
 export default function playGame() {
   while (true) {
