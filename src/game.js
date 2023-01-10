@@ -24,15 +24,15 @@ const playerTwo = new HumanPlayer(gameBoard, playerTypes.minimizing);
 const computerPlayerOne = new ComputerPlayer(
   gameBoard,
   playerTypes.maximizing,
-  6
+  8
 );
 const computerPlayerTwo = new ComputerPlayer(
   gameBoard,
   playerTypes.minimizing,
-  7
+  8
 );
 
-const players = [computerPlayerOne, computerPlayerTwo];
+const players = [computerPlayerOne, playerTwo];
 
 export default function playGame() {
   while (true) {

@@ -142,7 +142,7 @@ export default class GameBoard {
     const maximizingScores = this.getAdjacentCounts(playerTypes.maximizing);
     const minimizingScores = this.getAdjacentCounts(playerTypes.minimizing);
 
-    const weights = [0, 1, 2, 20,  50 * this.emptySlotCount(), 50 * this.emptySlotCount(), 50 * this.emptySlotCount()];
+    const weights = [0, 1, 10, 20,  999, 999, 999];
     let score = 0;
     for (let i = 0; i < weights.length; i++) {
       score += maximizingScores[i] * weights[i];
