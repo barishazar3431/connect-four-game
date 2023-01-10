@@ -1,4 +1,4 @@
-import { playerTypes } from "./players/Player.js";
+import { playerTypes } from './players/Player.js';
 
 export default class GameBoard {
   constructor(board = []) {
@@ -83,77 +83,93 @@ export default class GameBoard {
   }
 
   isWinning(playerType) {
-    let maxScore = 0;
-    for (let i = 0; i < this.board.length; i++) {
-      for (let j = 0; j < this.board[i].length; j++) {
-        if (this.board[i][j] === playerType) {
-          maxScore = Math.max(
-            maxScore,
-            this.verticalScore(i, j),
-            this.horizontalScore(i, j),
-            this.diagonalScore(i, j),
-            this.antiDiagonalScore(i, j)
-          );
-        }
+    const adjacentCounts = this.getAdjacentCounts(playerType);
+
+    for (let i = 4; i < adjacentCounts.length; i++) { 
+      if (adjacentCounts[i] > 0) {
+        return true;
       }
     }
-    return maxScore >= 4;
+    return false;
   }
 
-  calculateScore(playerType) {
-    let sum = 0;
-    for (let i = 0; i < this.board.length; i++) {
-      for (let j = 0; j < this.board[i].length; j++) {
-        if (this.board[i][j] === playerType) {
-          sum += Math.pow(this.horizontalScore(i, j), 3);
-          sum += Math.pow(this.verticalScore(i, j), 3);
-          sum += Math.pow(this.diagonalScore(i, j), 3);
-          sum += Math.pow(this.antiDiagonalScore(i, j), 3);
-        }
-      }
-    }
-    return sum;
-  }
-
-  minimax(depth, isMaximizing) {
-    // if (this.isDraw()) {
-    //   return 0;
-    // }
-
-    // if (this.isWinning(playerTypes.maximizing)) {
-    //   return 20 * this.emptySlotCount();
-    // }
-
-    // if (this.isWinning(playerTypes.minimizing)) {
-    //   return -20 * this.emptySlotCount();
-    // }
-
+  minimax(
+    depth,
+    isMaximizing,
+    alpha = Number.NEGATIVE_INFINITY,
+    beta = Number.POSITIVE_INFINITY
+  ) {
     if (depth === 0 || this.isGameOver()) {
-      return (
-        this.calculateScore(playerTypes.maximizing) - this.calculateScore(playerTypes.minimizing)
-      );
+      // console.log(this.toString())
+      return this.evaluationFunction(!isMaximizing);
     }
 
     if (isMaximizing) {
       let maxEvaluation = Number.NEGATIVE_INFINITY;
 
-      const childrenNodes = this.getChildrenBoards(playerTypes.maximizing);
+      const childrenNodes = this.getChildrenBoards(playerTypes.minimizing);
       for (const childNode of childrenNodes) {
-        const evaluation = childNode.minimax(depth - 1, false);
+        const evaluation = childNode.minimax(depth - 1, false, alpha, beta);
         maxEvaluation = Math.max(maxEvaluation, evaluation);
+        alpha = Math.max(alpha, evaluation);
+        if (beta <= alpha) {
+          break;
+        }
       }
       return maxEvaluation;
     } else {
       let minEvaluation = Number.POSITIVE_INFINITY;
 
-      const childrenNodes = this.getChildrenBoards(playerTypes.minimizing);
+      const childrenNodes = this.getChildrenBoards(playerTypes.maximizing);
       for (const childNode of childrenNodes) {
-        const evaluation = childNode.minimax(depth - 1, true);
+        const evaluation = childNode.minimax(depth - 1, true, alpha, beta);
         minEvaluation = Math.min(minEvaluation, evaluation);
+        beta = Math.min(beta, evaluation);
+        if (beta <= alpha) {
+          break;
+        }
       }
 
       return minEvaluation;
     }
+  }
+
+  evaluationFunction(isMaximizingTurn) {
+    if (this.isDraw()) {
+      return 0;
+    }
+
+    const maximizingScores = this.getAdjacentCounts(playerTypes.maximizing);
+    const minimizingScores = this.getAdjacentCounts(playerTypes.minimizing);
+
+    const weights = [0, 1, 2, 20,  50 * this.emptySlotCount(), 50 * this.emptySlotCount(), 50 * this.emptySlotCount()];
+    let score = 0;
+    for (let i = 0; i < weights.length; i++) {
+      score += maximizingScores[i] * weights[i];
+      score -= minimizingScores[i] * weights[i];
+    }
+
+    return score;
+  }
+
+  getAdjacentCounts(playerType) {
+    const adjacentCounts = new Array(this.board[0].length).fill(0);
+    for (let i = 0; i < this.board.length; i++) {
+      for (let j = 0; j < this.board[i].length; j++) {
+        if (this.board[i][j] === playerType) {
+          adjacentCounts[this.verticalScore(i, j)]++;
+          adjacentCounts[this.horizontalScore(i, j)]++;
+          adjacentCounts[this.diagonalScore(i, j)]++;
+          adjacentCounts[this.antiDiagonalScore(i, j)]++;
+        }
+      }
+    }
+
+    adjacentCounts.map((count, i) => {
+      return i === 0 ? count : count / i
+    });
+
+    return adjacentCounts;
   }
 
   //Get horizontal score of a point
@@ -369,5 +385,3 @@ export default class GameBoard {
     return string;
   }
 }
-
-

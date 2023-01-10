@@ -1,4 +1,5 @@
 import Player from './Player.js';
+import { playerTypes } from './Player.js';
 
 export default class ComputerPlayer extends Player {
   constructor(gameBoard, playerType, depth) {
@@ -17,6 +18,7 @@ export default class ComputerPlayer extends Player {
     const childrenBoards = this.gameBoard.getChildrenBoards(this.playerType);
     childrenBoards.forEach((child) => {
       const score = child.minimax(this.depth, this.isMaximizing);
+      console.log(score);
       child.minimaxScore = score;
     });
 
