@@ -72,7 +72,6 @@ export default class GameBoard {
 
       const newBoardClass = new GameBoard(newBoard);
       newBoardClass.addTokenToBoard(i + 1, playerType);
-
       childrenBoards.push(newBoardClass);
     }
     return childrenBoards;
@@ -101,13 +100,14 @@ export default class GameBoard {
   ) {
     if (depth === 0 || this.isGameOver()) {
       // console.log(this.toString())
-      return this.evaluationFunction(!isMaximizing);
+      // console.log(this.evaluationFunction())
+      return this.evaluationFunction();
     }
 
     if (isMaximizing) {
       let maxEvaluation = Number.NEGATIVE_INFINITY;
 
-      const childrenNodes = this.getChildrenBoards(playerTypes.minimizing);
+      const childrenNodes = this.getChildrenBoards(playerTypes.maximizing);
       for (const childNode of childrenNodes) {
         const evaluation = childNode.minimax(depth - 1, false, alpha, beta);
         maxEvaluation = Math.max(maxEvaluation, evaluation);
@@ -120,7 +120,7 @@ export default class GameBoard {
     } else {
       let minEvaluation = Number.POSITIVE_INFINITY;
 
-      const childrenNodes = this.getChildrenBoards(playerTypes.maximizing);
+      const childrenNodes = this.getChildrenBoards(playerTypes.minimizing);
       for (const childNode of childrenNodes) {
         const evaluation = childNode.minimax(depth - 1, true, alpha, beta);
         minEvaluation = Math.min(minEvaluation, evaluation);
@@ -129,12 +129,11 @@ export default class GameBoard {
           break;
         }
       }
-
       return minEvaluation;
     }
   }
 
-  evaluationFunction(isMaximizingTurn) {
+  evaluationFunction() {
     if (this.isDraw()) {
       return 0;
     }
@@ -142,13 +141,12 @@ export default class GameBoard {
     const maximizingScores = this.getAdjacentCounts(playerTypes.maximizing);
     const minimizingScores = this.getAdjacentCounts(playerTypes.minimizing);
 
-    const weights = [0, 1, 10, 20,  999, 999, 999];
+    const weights = [0, 5, 10, 20,  999, 999, 999];
     let score = 0;
     for (let i = 0; i < weights.length; i++) {
       score += maximizingScores[i] * weights[i];
       score -= minimizingScores[i] * weights[i];
     }
-
     return score;
   }
 

@@ -5,7 +5,6 @@ import ComputerPlayer from './players/ComputerPlayer.js';
 
 const initialBoard = [
   // [0, 0, 0, 0, 0, 0, 0],
-  // [0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0],
@@ -29,10 +28,10 @@ const computerPlayerOne = new ComputerPlayer(
 const computerPlayerTwo = new ComputerPlayer(
   gameBoard,
   playerTypes.minimizing,
-  8
+  7
 );
 
-const players = [computerPlayerOne, playerTwo];
+const players = [computerPlayerOne, computerPlayerTwo];
 
 export default function playGame() {
   while (true) {
