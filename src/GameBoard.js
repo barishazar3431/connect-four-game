@@ -84,7 +84,7 @@ export default class GameBoard {
   isWinning(playerType) {
     const adjacentCounts = this.getAdjacentCounts(playerType);
 
-    for (let i = 4; i < adjacentCounts.length; i++) { 
+    for (let i = 4; i < adjacentCounts.length; i++) {
       if (adjacentCounts[i] > 0) {
         return true;
       }
@@ -98,9 +98,19 @@ export default class GameBoard {
     alpha = Number.NEGATIVE_INFINITY,
     beta = Number.POSITIVE_INFINITY
   ) {
-    if (depth === 0 || this.isGameOver()) {
-      // console.log(this.toString())
-      // console.log(this.evaluationFunction())
+    if (this.isDraw()) {
+      return 0;
+    }
+
+    if (this.isWinning(playerTypes.maximizing)) {
+      return 999 * this.emptySlotCount();
+    }
+
+    if (this.isWinning(playerTypes.minimizing)) {
+      return -999 * this.emptySlotCount();
+    }
+
+    if (depth === 0) {
       return this.evaluationFunction();
     }
 
@@ -134,14 +144,10 @@ export default class GameBoard {
   }
 
   evaluationFunction() {
-    if (this.isDraw()) {
-      return 0;
-    }
-
     const maximizingScores = this.getAdjacentCounts(playerTypes.maximizing);
     const minimizingScores = this.getAdjacentCounts(playerTypes.minimizing);
 
-    const weights = [0, 5, 10, 20,  999, 999, 999];
+    const weights = [0, 5, 10, 20];
     let score = 0;
     for (let i = 0; i < weights.length; i++) {
       score += maximizingScores[i] * weights[i];
@@ -151,7 +157,7 @@ export default class GameBoard {
   }
 
   getAdjacentCounts(playerType) {
-    const adjacentCounts = new Array(this.board[0].length).fill(0);
+    let adjacentCounts = new Array(this.board[0].length).fill(0);
     for (let i = 0; i < this.board.length; i++) {
       for (let j = 0; j < this.board[i].length; j++) {
         if (this.board[i][j] === playerType) {
@@ -162,11 +168,9 @@ export default class GameBoard {
         }
       }
     }
-
-    adjacentCounts.map((count, i) => {
-      return i === 0 ? count : count / i
+    adjacentCounts = adjacentCounts.map((count, i) => {
+      return i === 0 ? count : count / i;
     });
-
     return adjacentCounts;
   }
 

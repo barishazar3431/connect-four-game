@@ -4,18 +4,17 @@ import HumanPlayer from './players/HumanPlayer.js';
 import ComputerPlayer from './players/ComputerPlayer.js';
 
 const initialBoard = [
-  // [0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0],
 ];
 
 const gameBoard = new GameBoard(initialBoard);
-console.log(gameBoard.evaluationFunction(false));
-
+console.log(gameBoard.evaluationFunction());
 
 const playerOne = new HumanPlayer(gameBoard, playerTypes.maximizing);
 const playerTwo = new HumanPlayer(gameBoard, playerTypes.minimizing);
@@ -23,12 +22,12 @@ const playerTwo = new HumanPlayer(gameBoard, playerTypes.minimizing);
 const computerPlayerOne = new ComputerPlayer(
   gameBoard,
   playerTypes.maximizing,
-  8
+  4
 );
 const computerPlayerTwo = new ComputerPlayer(
   gameBoard,
   playerTypes.minimizing,
-  7
+  3
 );
 
 const players = [computerPlayerOne, computerPlayerTwo];

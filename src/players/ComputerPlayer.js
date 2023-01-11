@@ -16,7 +16,7 @@ export default class ComputerPlayer extends Player {
 
   getBestChild() {
     const childrenBoards = this.gameBoard.getChildrenBoards(this.playerType);
-    childrenBoards.forEach((child) => {
+    childrenBoards.forEach((child, i) => {
       const score = child.minimax(this.depth, !this.isMaximizing);
       console.log(score);
       child.minimaxScore = score;
