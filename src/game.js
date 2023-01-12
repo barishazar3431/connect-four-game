@@ -23,7 +23,7 @@ const playerTwo = new HumanPlayer(gameBoard, playerTypes.minimizing);
 const computerPlayerOne = new ComputerPlayer(
   gameBoard,
   playerTypes.maximizing,
-  0,
+  3,
   completableAdjacentScore
 );
 

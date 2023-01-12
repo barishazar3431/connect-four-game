@@ -49,16 +49,13 @@ function getAdjacentArray(gameBoard, playerType, isCompletable) {
   for (let i = 0; i < gameBoard.board.length; i++) {
     for (let j = 0; j < gameBoard.board[i].length; j++) {
       if (gameBoard.board[i][j] === playerType) {
-        const verticalAdjacents = verticalCompletableAdjacents(gameBoard, i, j)[
-          index
-        ];
-        adjacentCounts[verticalCompletableAdjacents(gameBoard, i, j)[index]]++;
+        adjacentCounts[verticalAdjacents(gameBoard, i, j)[index]]++;
         adjacentCounts[
-          horizontalCompletableAdjacents(gameBoard, i, j)[index]
+          horizontalAdjacents(gameBoard, i, j)[index]
         ]++;
-        adjacentCounts[diagonalCompletableAdjacents(gameBoard, i, j)[index]]++;
+        adjacentCounts[diagonalAdjacents(gameBoard, i, j)[index]]++;
         adjacentCounts[
-          antiDiagonalCompletableAdjacents(gameBoard, i, j)[index]
+          antiDiagonalAdjacents(gameBoard, i, j)[index]
         ]++;
       }
     }
@@ -70,7 +67,7 @@ function getAdjacentArray(gameBoard, playerType, isCompletable) {
 }
 
 //Get horizontal completable adjacent number of a point
-function horizontalCompletableAdjacents(gameBoard, row, col) {
+function horizontalAdjacents(gameBoard, row, col) {
   const tokenType = gameBoard.board[row][col];
   let [low, high] = [col - 1, col + 1];
   let [lowFast, highFast] = [col - 1, col + 1];
@@ -109,7 +106,7 @@ function horizontalCompletableAdjacents(gameBoard, row, col) {
   return [adjacentCount, completableAdjacentCount];
 }
 
-function verticalCompletableAdjacents(gameBoard, row, col) {
+function verticalAdjacents(gameBoard, row, col) {
   const tokenType = gameBoard.board[row][col];
 
   let low = row - 1,
@@ -151,7 +148,7 @@ function verticalCompletableAdjacents(gameBoard, row, col) {
   return [adjacentCount, completableAdjacentCount];
 }
 
-function diagonalCompletableAdjacents(gameBoard, row, col) {
+function diagonalAdjacents(gameBoard, row, col) {
   const tokenType = gameBoard.board[row][col];
 
   let lowI = row - 1,
@@ -204,7 +201,7 @@ function diagonalCompletableAdjacents(gameBoard, row, col) {
   return [adjacentCount, completableAdjacentCount];
 }
 
-function antiDiagonalCompletableAdjacents(gameBoard, row, col) {
+function antiDiagonalAdjacents(gameBoard, row, col) {
   const tokenType = gameBoard.board[row][col];
 
   let lowI = row - 1,
