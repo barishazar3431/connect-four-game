@@ -2,6 +2,7 @@ import GameBoard from './GameBoard.js';
 import { playerTypes } from './players/Player.js';
 import HumanPlayer from './players/HumanPlayer.js';
 import ComputerPlayer from './players/ComputerPlayer.js';
+import { evaluationFunction } from './EvaluationFunctions.js';
 
 const initialBoard = [
   [0, 0, 0, 0, 0, 0, 0, 0],
@@ -14,7 +15,7 @@ const initialBoard = [
 ];
 
 const gameBoard = new GameBoard(initialBoard);
-console.log(gameBoard.evaluationFunction());
+console.log(gameBoard.isWinning(playerTypes.maximizing));
 
 const playerOne = new HumanPlayer(gameBoard, playerTypes.maximizing);
 const playerTwo = new HumanPlayer(gameBoard, playerTypes.minimizing);
@@ -22,15 +23,18 @@ const playerTwo = new HumanPlayer(gameBoard, playerTypes.minimizing);
 const computerPlayerOne = new ComputerPlayer(
   gameBoard,
   playerTypes.maximizing,
-  4
+  4,
+  evaluationFunction
 );
+
 const computerPlayerTwo = new ComputerPlayer(
   gameBoard,
   playerTypes.minimizing,
-  3
+  3,
+  evaluationFunction
 );
 
-const players = [computerPlayerOne, computerPlayerTwo];
+const players = [computerPlayerOne, playerTwo];
 
 export default function playGame() {
   while (true) {

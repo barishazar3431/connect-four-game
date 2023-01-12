@@ -77,22 +77,8 @@ export default class GameBoard {
     return childrenBoards;
   }
 
-  isDraw() {
-    return this.board[0].every((slot, i) => this.isPositionFull(i + 1));
-  }
-
-  isWinning(playerType) {
-    const adjacentCounts = this.getAdjacentCounts(playerType);
-
-    for (let i = 4; i < adjacentCounts.length; i++) {
-      if (adjacentCounts[i] > 0) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   minimax(
+    evaluationFunction,
     depth,
     isMaximizing,
     alpha = Number.NEGATIVE_INFINITY,
@@ -111,7 +97,7 @@ export default class GameBoard {
     }
 
     if (depth === 0) {
-      return this.evaluationFunction();
+      return evaluationFunction(this);
     }
 
     if (isMaximizing) {
@@ -119,7 +105,7 @@ export default class GameBoard {
 
       const childrenNodes = this.getChildrenBoards(playerTypes.maximizing);
       for (const childNode of childrenNodes) {
-        const evaluation = childNode.minimax(depth - 1, false, alpha, beta);
+        const evaluation = childNode.minimax(evaluationFunction, depth - 1, false, alpha, beta);
         maxEvaluation = Math.max(maxEvaluation, evaluation);
         alpha = Math.max(alpha, evaluation);
         if (beta <= alpha) {
@@ -132,7 +118,7 @@ export default class GameBoard {
 
       const childrenNodes = this.getChildrenBoards(playerTypes.minimizing);
       for (const childNode of childrenNodes) {
-        const evaluation = childNode.minimax(depth - 1, true, alpha, beta);
+        const evaluation = childNode.minimax(evaluationFunction, depth - 1, true, alpha, beta);
         minEvaluation = Math.min(minEvaluation, evaluation);
         beta = Math.min(beta, evaluation);
         if (beta <= alpha) {
@@ -143,230 +129,81 @@ export default class GameBoard {
     }
   }
 
-  evaluationFunction() {
-    const maximizingScores = this.getAdjacentCounts(playerTypes.maximizing);
-    const minimizingScores = this.getAdjacentCounts(playerTypes.minimizing);
-
-    const weights = [0, 5, 10, 20];
-    let score = 0;
-    for (let i = 0; i < weights.length; i++) {
-      score += maximizingScores[i] * weights[i];
-      score -= minimizingScores[i] * weights[i];
-    }
-    return score;
+  isDraw() {
+    return this.board[0].every((slot, i) => this.isPositionFull(i + 1));
   }
 
-  getAdjacentCounts(playerType) {
-    let adjacentCounts = new Array(this.board[0].length).fill(0);
+  isWinning(playerType) {
+    return (
+      this.isWinningHorizontal(playerType) ||
+      this.isWinningVertical(playerType) ||
+      this.isWinningDiagonal(playerType) ||
+      this.isWinningAntidiagonal(playerType)
+    );
+  }
+
+  isWinningHorizontal(playerType) {
     for (let i = 0; i < this.board.length; i++) {
-      for (let j = 0; j < this.board[i].length; j++) {
-        if (this.board[i][j] === playerType) {
-          adjacentCounts[this.verticalScore(i, j)]++;
-          adjacentCounts[this.horizontalScore(i, j)]++;
-          adjacentCounts[this.diagonalScore(i, j)]++;
-          adjacentCounts[this.antiDiagonalScore(i, j)]++;
+      for (let j = 0; j < this.board[i].length - 3; j++) {
+        if (
+          this.board[i][j] === playerType &&
+          this.board[i][j + 1] === playerType &&
+          this.board[i][j + 2] === playerType &&
+          this.board[i][j + 3] === playerType
+        ) {
+          return true;
         }
       }
     }
-    adjacentCounts = adjacentCounts.map((count, i) => {
-      return i === 0 ? count : count / i;
-    });
-    return adjacentCounts;
+    return false;
   }
 
-  //Get horizontal score of a point
-  horizontalScore(row, col) {
-    const tokenType = this.board[row][col];
-    let [low, high] = [col - 1, col + 1];
-    let [lowFast, highFast] = [col - 1, col + 1];
-
-    while (low >= 0 && this.board[row][low] === tokenType) {
-      low--;
+  isWinningVertical(playerType) {
+    for (let i = 0; i < this.board.length - 3; i++) {
+      for (let j = 0; j < this.board[i].length; j++) {
+        if (
+          this.board[i][j] === playerType &&
+          this.board[i + 1][j] === playerType &&
+          this.board[i + 2][j] === playerType &&
+          this.board[i + 3][j] === playerType
+        ) {
+          return true;
+        }
+      }
     }
-
-    while (high < this.board[0].length && this.board[row][high] === tokenType) {
-      high++;
-    }
-
-    while (
-      lowFast >= 0 &&
-      (this.board[row][lowFast] === tokenType || this.board[row][lowFast] === 0)
-    ) {
-      lowFast--;
-    }
-
-    while (
-      highFast < this.board[0].length &&
-      (this.board[row][highFast] === tokenType ||
-        this.board[row][highFast] === 0)
-    ) {
-      highFast++;
-    }
-
-    const adjacentCount = high - low - 1;
-    const potentialCount = highFast - lowFast - 1;
-    if (potentialCount < 4) {
-      return 0;
-    }
-
-    return adjacentCount;
+    return false;
   }
 
-  verticalScore(row, col) {
-    const tokenType = this.board[row][col];
-
-    let low = row - 1,
-      lowFast = row - 1;
-    let high = row + 1,
-      highFast = row + 1;
-
-    while (low >= 0 && this.board[low][col] === tokenType) {
-      low--;
+  isWinningDiagonal(playerType) {
+    for (let i = 0; i < this.board.length - 3; i++) {
+      for (let j = 0; j < this.board[i].length - 3; j++) {
+        if (
+          this.board[i][j] === playerType &&
+          this.board[i + 1][j + 1] === playerType &&
+          this.board[i + 2][j + 2] === playerType &&
+          this.board[i + 3][j + 3] === playerType
+        ) {
+          return true;
+        }
+      }
     }
-
-    while (high < this.board.length && this.board[high][col] === tokenType) {
-      high++;
-    }
-
-    while (
-      lowFast >= 0 &&
-      (this.board[lowFast][col] === tokenType || this.board[lowFast][col] === 0)
-    ) {
-      lowFast--;
-    }
-
-    while (
-      highFast < this.board.length &&
-      (this.board[highFast][col] === tokenType ||
-        this.board[highFast][col] === 0)
-    ) {
-      highFast++;
-    }
-
-    const adjacentCount = high - low - 1;
-    const potentialCount = highFast - lowFast - 1;
-
-    if (potentialCount < 4) {
-      return 0;
-    }
-
-    return adjacentCount;
+    return false;
   }
 
-  diagonalScore(row, col) {
-    const tokenType = this.board[row][col];
-
-    let lowI = row - 1,
-      lowJ = col - 1,
-      lowIFast = row - 1,
-      lowJFast = col - 1;
-    let highI = row + 1,
-      highIFast = row + 1,
-      highJ = col + 1,
-      highJFast = col + 1;
-
-    while (lowI >= 0 && lowJ >= 0 && this.board[lowI][lowJ] === tokenType) {
-      lowI--;
-      lowJ--;
+  isWinningAntidiagonal(playerType) {
+    for (let i = 0; i < this.board.length - 3; i++) {
+      for (let j = this.board[i].length - 1; j > 2; j--) {
+        if (
+          this.board[i][j] === playerType &&
+          this.board[i + 1][j - 1] === playerType &&
+          this.board[i + 2][j - 2] === playerType &&
+          this.board[i + 3][j - 3] === playerType
+        ) {
+          return true;
+        }
+      }
     }
-
-    while (
-      highI < this.board.length &&
-      highJ < this.board[0].length &&
-      this.board[highI][highJ] === tokenType
-    ) {
-      highI++;
-      highJ++;
-    }
-
-    while (
-      lowIFast >= 0 &&
-      lowJFast >= 0 &&
-      (this.board[lowIFast][lowJFast] === tokenType ||
-        this.board[lowIFast][lowJFast] === 0)
-    ) {
-      lowIFast--;
-      lowJFast--;
-    }
-
-    while (
-      highIFast < this.board.length &&
-      highJFast < this.board[0].length &&
-      (this.board[highIFast][highJFast] === tokenType ||
-        this.board[highIFast][highJFast] === 0)
-    ) {
-      highIFast++;
-      highJFast++;
-    }
-
-    const adjacentCount = highI - lowI - 1;
-    const potentialCount = highIFast - lowIFast - 1;
-
-    if (potentialCount < 4) {
-      return 0;
-    }
-
-    return adjacentCount;
-  }
-
-  antiDiagonalScore(row, col) {
-    const tokenType = this.board[row][col];
-
-    let lowI = row - 1,
-      lowJ = col + 1,
-      lowIFast = row - 1,
-      lowJFast = col + 1;
-    let highI = row + 1,
-      highIFast = row + 1,
-      highJ = col - 1,
-      highJFast = col - 1;
-
-    while (
-      lowI >= 0 &&
-      lowJ < this.board[0].length &&
-      this.board[lowI][lowJ] === tokenType
-    ) {
-      lowI--;
-      lowJ++;
-    }
-
-    while (
-      highI < this.board.length &&
-      highJ >= 0 &&
-      this.board[highI][highJ] === tokenType
-    ) {
-      highI++;
-      highJ--;
-    }
-
-    while (
-      lowIFast >= 0 &&
-      lowJFast < this.board[0].length &&
-      (this.board[lowIFast][lowJFast] === tokenType ||
-        this.board[lowIFast][lowJFast] === 0)
-    ) {
-      lowIFast--;
-      lowJFast++;
-    }
-
-    while (
-      highIFast < this.board.length &&
-      highJFast >= 0 &&
-      (this.board[highIFast][highJFast] === tokenType ||
-        this.board[highIFast][highJFast] === 0)
-    ) {
-      highIFast++;
-      highJFast--;
-    }
-
-    const adjacentCount = highI - lowI - 1;
-    const potentialCount = highIFast - lowIFast - 1;
-
-    if (potentialCount < 4) {
-      return 0;
-    }
-
-    return adjacentCount;
+    return false;
   }
 
   toString() {

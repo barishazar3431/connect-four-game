@@ -14,7 +14,7 @@ export default class HumanPlayer extends Player {
       this.gameBoard.addTokenToBoard(position, this.playerType);
     } catch (err) {
       console.log(err.message);
-      console.log('Try again.');
+      console.log('Try again...');
       this.takeTurn();
     }
   }

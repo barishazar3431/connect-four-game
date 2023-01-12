@@ -2,22 +2,23 @@ import Player from './Player.js';
 import { playerTypes } from './Player.js';
 
 export default class ComputerPlayer extends Player {
-  constructor(gameBoard, playerType, depth) {
+  constructor(gameBoard, playerType, plies, evaluationFunction) {
     super(gameBoard, playerType);
-    this.depth = depth;
+    this.plies = plies;
     this.isMaximizing = this.playerType === 'X';
+    this.evaluationFunction = evaluationFunction;
   }
 
   takeTurn() {
-    const bestChild = this.getBestChild();
-
-    this.gameBoard.board = bestChild.board;
+    const bestChild = this.getBestChild(); //Find the best child
+    this.gameBoard.board = bestChild.board; //Change the board to this new child
   }
 
+  /**Returns the best child by calling minimax for each of them */
   getBestChild() {
     const childrenBoards = this.gameBoard.getChildrenBoards(this.playerType);
     childrenBoards.forEach((child, i) => {
-      const score = child.minimax(this.depth, !this.isMaximizing);
+      const score = child.minimax(this.evaluationFunction ,this.plies, !this.isMaximizing);
       console.log(score);
       child.minimaxScore = score;
     });
