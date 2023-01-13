@@ -2,7 +2,7 @@ import GameBoard from './GameBoard.js';
 import { playerTypes } from './players/Player.js';
 import HumanPlayer from './players/HumanPlayer.js';
 import ComputerPlayer from './players/ComputerPlayer.js';
-import { completableAdjacentScore, plainAdjacentScore } from './EvaluationFunctions.js';
+import { centralityScore, completableAdjacentScore, plainAdjacentScore } from './EvaluationFunctions.js';
 
 const initialBoard = [
   [0, 0, 0, 0, 0, 0, 0, 0],
@@ -23,18 +23,18 @@ const playerTwo = new HumanPlayer(gameBoard, playerTypes.minimizing);
 const computerPlayerOne = new ComputerPlayer(
   gameBoard,
   playerTypes.maximizing,
-  3,
+  7,
   completableAdjacentScore
 );
 
 const computerPlayerTwo = new ComputerPlayer(
   gameBoard,
   playerTypes.minimizing,
-  6,
-  plainAdjacentScore
+  7,
+  centralityScore
 );
 
-const players = [computerPlayerOne, computerPlayerTwo];
+const players = [computerPlayerTwo, computerPlayerOne];
 
 export default function playGame() {
   while (true) {

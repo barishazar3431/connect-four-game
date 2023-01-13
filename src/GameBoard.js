@@ -89,11 +89,11 @@ export default class GameBoard {
     }
 
     if (this.isWinning(playerTypes.maximizing)) {
-      return 999 * this.emptySlotCount();
+      return 999 * (this.emptySlotCount() + 1);
     }
 
     if (this.isWinning(playerTypes.minimizing)) {
-      return -999 * this.emptySlotCount();
+      return -999 * (this.emptySlotCount() + 1);
     }
 
     if (depth === 0) {
