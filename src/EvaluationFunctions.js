@@ -1,37 +1,8 @@
 import { playerTypes } from './players/Player.js';
 
 export function completableAdjacentScore(gameBoard) {
-  const maximizingScores = getAdjacentArray(
-    gameBoard,
-    playerTypes.maximizing,
-    true
-  );
-  const minimizingScores = getAdjacentArray(
-    gameBoard,
-    playerTypes.minimizing,
-    true
-  );
-
-  const weights = [0, 5, 7.5, 11.25]; //Weights of adjacent token counts(2 adjacent's weight is 10, 3 is 20 ...)
-  let score = 0;
-  for (let i = 0; i < weights.length; i++) {
-    score += maximizingScores[i] * weights[i];
-    score -= minimizingScores[i] * weights[i];
-  }
-  return score;
-}
-
-export function plainAdjacentScore(gameBoard) {
-  const maximizingScores = getAdjacentArray(
-    gameBoard,
-    playerTypes.maximizing,
-    false
-  );
-  const minimizingScores = getAdjacentArray(
-    gameBoard,
-    playerTypes.minimizing,
-    false
-  );
+  const maximizingScores = getAdjacentArray(gameBoard, playerTypes.maximizing);
+  const minimizingScores = getAdjacentArray(gameBoard, playerTypes.minimizing);
 
   const weights = [0, 5, 7.5, 11.25]; //Weights of adjacent token counts(2 adjacent's weight is 10, 3 is 20 ...)
   let score = 0;
@@ -44,13 +15,13 @@ export function plainAdjacentScore(gameBoard) {
 
 export function centralityScore(gameBoard) {
   const weights = [
-    [1, 2, 3, 4, 4, 3, 2, 1],
-    [2, 3, 4, 5, 5, 4, 3, 2],
-    [3, 4, 5, 6, 6, 5, 4, 3],
-    [4, 5, 6, 7, 7, 6, 5, 4],
-    [3, 4, 5, 6, 6, 5, 4, 3],
-    [2, 3, 4, 5, 5, 4, 3, 2],
-    [1, 2, 3, 4, 4, 3, 2, 1],
+    [1, 2, 4, 8, 8, 4, 2, 1],
+    [2, 4, 8, 16, 16, 8, 4, 2],
+    [4, 8, 16, 32, 32, 16, 8, 4],
+    [8, 16, 32, 64, 64, 32, 16, 8],
+    [4, 8, 16, 32, 32, 16, 8, 4],
+    [2, 4, 8, 16, 16, 8, 4, 2],
+    [1, 2, 4, 8, 8, 4, 2, 1],
   ];
   let score = 0;
   for (let i = 0; i < gameBoard.board.length; i++) {
@@ -69,17 +40,26 @@ export function centralityScore(gameBoard) {
   return score;
 }
 
-function getAdjacentArray(gameBoard, playerType, isCompletable) {
+export function combined(gameBoard) {
+  const weights = [0.1, 0.9];
+
+  const combinedScore =
+    centralityScore(gameBoard) * weights[0] +
+    completableAdjacentScore(gameBoard) * weights[1];
+
+  return combinedScore;
+}
+
+function getAdjacentArray(gameBoard, playerType) {
   let adjacentCounts = new Array(gameBoard.board[0].length).fill(0);
 
-  const index = isCompletable ? 1 : 0;
   for (let i = 0; i < gameBoard.board.length; i++) {
     for (let j = 0; j < gameBoard.board[i].length; j++) {
       if (gameBoard.board[i][j] === playerType) {
-        adjacentCounts[verticalAdjacents(gameBoard, i, j)[index]]++;
-        adjacentCounts[horizontalAdjacents(gameBoard, i, j)[index]]++;
-        adjacentCounts[diagonalAdjacents(gameBoard, i, j)[index]]++;
-        adjacentCounts[antiDiagonalAdjacents(gameBoard, i, j)[index]]++;
+        adjacentCounts[verticalAdjacents(gameBoard, i, j)]++;
+        adjacentCounts[horizontalAdjacents(gameBoard, i, j)]++;
+        adjacentCounts[diagonalAdjacents(gameBoard, i, j)]++;
+        adjacentCounts[antiDiagonalAdjacents(gameBoard, i, j)]++;
       }
     }
   }
@@ -126,7 +106,7 @@ function horizontalAdjacents(gameBoard, row, col) {
   const potentialCount = highFast - lowFast - 1;
   const completableAdjacentCount = potentialCount < 4 ? 0 : adjacentCount;
 
-  return [adjacentCount, completableAdjacentCount];
+  return completableAdjacentCount;
 }
 
 function verticalAdjacents(gameBoard, row, col) {
@@ -168,7 +148,7 @@ function verticalAdjacents(gameBoard, row, col) {
   const potentialCount = highFast - lowFast - 1;
   const completableAdjacentCount = potentialCount < 4 ? 0 : adjacentCount;
 
-  return [adjacentCount, completableAdjacentCount];
+  return completableAdjacentCount;
 }
 
 function diagonalAdjacents(gameBoard, row, col) {
@@ -221,7 +201,7 @@ function diagonalAdjacents(gameBoard, row, col) {
   const potentialCount = highIFast - lowIFast - 1;
   const completableAdjacentCount = potentialCount < 4 ? 0 : adjacentCount;
 
-  return [adjacentCount, completableAdjacentCount];
+  return completableAdjacentCount;
 }
 
 function antiDiagonalAdjacents(gameBoard, row, col) {
@@ -278,5 +258,5 @@ function antiDiagonalAdjacents(gameBoard, row, col) {
   const potentialCount = highIFast - lowIFast - 1;
   const completableAdjacentCount = potentialCount < 4 ? 0 : adjacentCount;
 
-  return [adjacentCount, completableAdjacentCount];
+  return completableAdjacentCount;
 }
