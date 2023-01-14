@@ -3,7 +3,7 @@ import { playerTypes } from './players/Player.js';
 import HumanPlayer from './players/HumanPlayer.js';
 import ComputerPlayer from './players/ComputerPlayer.js';
 import {
-  completableAdjacentScore,
+  completableScore,
   centralityScore,
   combined,
 } from './EvaluationFunctions.js';
@@ -36,7 +36,7 @@ const computerPlayerTwo = new ComputerPlayer(
   gameBoard,
   playerTypes.minimizing,
   7,
-  completableAdjacentScore
+  completableScore
 );
 
 const players = [computerPlayerOne, computerPlayerTwo];
