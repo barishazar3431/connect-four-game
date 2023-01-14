@@ -5,10 +5,10 @@ import ComputerPlayer from './players/ComputerPlayer.js';
 import {
   completableScore,
   centralityScore,
-  combined,
+  completableCentralityScore,
 } from './EvaluationFunctions.js';
 
-const initialBoard = [
+export const initialBoard = [
   [0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
@@ -19,8 +19,6 @@ const initialBoard = [
 ];
 
 const gameBoard = new GameBoard(initialBoard);
-// console.log(getCompletableArray(gameBoard, playerTypes.maximizing));
-// console.log(completableAdjacentScore(gameBoard));
 
 const playerOne = new HumanPlayer(gameBoard, playerTypes.maximizing);
 const playerTwo = new HumanPlayer(gameBoard, playerTypes.minimizing);
@@ -28,14 +26,14 @@ const playerTwo = new HumanPlayer(gameBoard, playerTypes.minimizing);
 const computerPlayerOne = new ComputerPlayer(
   gameBoard,
   playerTypes.maximizing,
-  7,
-  combined
+  6,
+  completableCentralityScore
 );
 
 const computerPlayerTwo = new ComputerPlayer(
   gameBoard,
   playerTypes.minimizing,
-  7,
+  6,
   completableScore
 );
 
