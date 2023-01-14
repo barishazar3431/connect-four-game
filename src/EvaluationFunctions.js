@@ -1,15 +1,19 @@
 import { playerTypes } from './players/Player.js';
 
 export function completableAdjacentScore(gameBoard) {
-  const maximizingScores = getAdjacentArray(gameBoard, playerTypes.maximizing);
-  const minimizingScores = getAdjacentArray(gameBoard, playerTypes.minimizing);
+  const maximizingCompletables = getCompletableArray(
+    gameBoard,
+    playerTypes.maximizing
+  );
+  const minimizingCompletables = getCompletableArray(
+    gameBoard,
+    playerTypes.minimizing
+  );
 
-  const weights = [0, 5, 7.5, 11.25]; //Weights of adjacent token counts(2 adjacent's weight is 10, 3 is 20 ...)
   let score = 0;
-  for (let i = 0; i < weights.length; i++) {
-    score += maximizingScores[i] * weights[i];
-    score -= minimizingScores[i] * weights[i];
-  }
+  maximizingCompletables.forEach((completable) => (score += completable));
+  minimizingCompletables.forEach((completable) => (score -= completable));
+
   return score;
 }
 
@@ -18,7 +22,7 @@ export function centralityScore(gameBoard) {
     [1, 2, 4, 8, 8, 4, 2, 1],
     [2, 4, 8, 16, 16, 8, 4, 2],
     [4, 8, 16, 32, 32, 16, 8, 4],
-    [8, 16, 32, 64, 64, 32, 16, 8],
+    [8, 16, 32, 128, 128, 32, 16, 8],
     [4, 8, 16, 32, 32, 16, 8, 4],
     [2, 4, 8, 16, 16, 8, 4, 2],
     [1, 2, 4, 8, 8, 4, 2, 1],
@@ -41,7 +45,7 @@ export function centralityScore(gameBoard) {
 }
 
 export function combined(gameBoard) {
-  const weights = [0.1, 0.9];
+  const weights = [0.05, 0.95];
 
   const combinedScore =
     centralityScore(gameBoard) * weights[0] +
@@ -50,8 +54,8 @@ export function combined(gameBoard) {
   return combinedScore;
 }
 
-function getAdjacentArray(gameBoard, playerType) {
-  let adjacentCounts = new Array(gameBoard.board[0].length).fill(0);
+function getCompletableArray(gameBoard, playerType) {
+  let adjacentCounts = new Array(4).fill(0);
 
   for (let i = 0; i < gameBoard.board.length; i++) {
     for (let j = 0; j < gameBoard.board[i].length; j++) {
@@ -63,9 +67,10 @@ function getAdjacentArray(gameBoard, playerType) {
       }
     }
   }
-  adjacentCounts = adjacentCounts.map((count, i) => {
-    return i === 0 ? count : count / i;
-  });
+
+  //Normalize counts which are repeated
+  adjacentCounts = adjacentCounts.slice(1).map((count, i) => count / (i + 1));
+
   return adjacentCounts;
 }
 
