@@ -22,7 +22,7 @@ export const initialBoard = [
 
 const gameBoard = new GameBoard(initialBoard);
 
-function configureTheGame() {  
+function initiateTheGame() {
   try {
     const gameMode = getGameModeFromUser();
     const players = getPlayersFromUser(gameMode);
@@ -30,7 +30,7 @@ function configureTheGame() {
   } catch (err) {
     console.log(err.message);
     console.log('Try Again...');
-    configureTheGame();
+    initiateTheGame();
   }
 }
 
@@ -127,4 +127,4 @@ function playGame(players) {
   }
 }
 
-configureTheGame();
+initiateTheGame();

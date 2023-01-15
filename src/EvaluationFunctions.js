@@ -1,36 +1,37 @@
 import { playerTypes } from './players/Player.js';
-import { getCompletableArray, getProbabilitiesArray } from './utils.js';
+import {
+  getCompletableSumOfPlayerType,
+  getProbabilitiesArray,
+  getCompletableMatrix,
+} from './utils.js';
 
 export function completableScore(gameBoard) {
-  const maximizingCompletables = getCompletableArray(
+  const maximizingCompletableSum = getCompletableSumOfPlayerType(
     gameBoard,
     playerTypes.maximizing
   );
-  const minimizingCompletables = getCompletableArray(
+  const minimizingCompletableSum = getCompletableSumOfPlayerType(
     gameBoard,
     playerTypes.minimizing
   );
 
-  let score = 0;
-  maximizingCompletables.forEach((completable) => (score += completable));
-  minimizingCompletables.forEach((completable) => (score -= completable));
-
+  const score = maximizingCompletableSum - minimizingCompletableSum;
   return score;
 }
 
 export function centralityScore(gameBoard) {
-  let weights = getProbabilitiesArray();
+  let probabilities = getProbabilitiesArray();
 
   let score = 0;
   for (let i = 0; i < gameBoard.board.length; i++) {
     for (let j = 0; j < gameBoard.board[i].length; j++) {
       const currentToken = gameBoard.board[i][j];
       if (currentToken === playerTypes.maximizing) {
-        score += weights[i][j];
+        score += probabilities[i][j];
       }
 
       if (currentToken === playerTypes.minimizing) {
-        score -= weights[i][j];
+        score -= probabilities[i][j];
       }
     }
   }
@@ -39,11 +40,24 @@ export function centralityScore(gameBoard) {
 }
 
 export function completableCentralityScore(gameBoard) {
-  const weights = [0.2, 0.8];
+  const maximizingCompletableArray = getCompletableMatrix(
+    gameBoard,
+    playerTypes.maximizing
+  );
+  const minimizingCompletableArray = getCompletableMatrix(
+    gameBoard,
+    playerTypes.minimizing
+  );
 
-  const combinedScore =
-    centralityScore(gameBoard) * weights[0] +
-    completableScore(gameBoard) * weights[1];
+  const probabilities = getProbabilitiesArray();
 
-  return combinedScore;
+  let score = 0;
+  for (let i = 0; i < probabilities.length; i++) {
+    for (let j = 0; j < probabilities[i].length; j++) {
+      score += probabilities[i][j] * maximizingCompletableArray[i][j];
+      score -= probabilities[i][j] * minimizingCompletableArray[i][j];
+    }
+  }
+
+  return score;
 }

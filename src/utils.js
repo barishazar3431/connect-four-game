@@ -61,8 +61,9 @@ function antiDiagonalProbabilities(probabilitiesArray) {
   }
 }
 
-export function getCompletableArray(gameBoard, playerType) {
-  let adjacentCounts = new Array(4).fill(0);
+/**Returns The Sum of all the completable tokens for the given playerType*/
+export function getCompletableSumOfPlayerType(gameBoard, playerType) {
+  const adjacentCounts = new Array(4).fill(0);
 
   for (let i = 0; i < gameBoard.board.length; i++) {
     for (let j = 0; j < gameBoard.board[i].length; j++) {
@@ -75,10 +76,40 @@ export function getCompletableArray(gameBoard, playerType) {
     }
   }
 
-  //Normalize counts which are repeated
-  adjacentCounts = adjacentCounts.slice(1).map((count, i) => count / (i + 1));
+  //Normalize counts which are repeated and sum each of them
+  const completableSum = adjacentCounts
+    .slice(1)
+    .map((count, i) => count / (i + 1))
+    .reduce((a, b) => a + b, 0);
 
-  return adjacentCounts;
+  return completableSum;
+}
+
+export function getCompletableMatrix(gameBoard, playerType) {
+  const completablesArray = Array.from({ length: initialBoard.length }, () =>
+    Array(initialBoard[0].length).fill(0)
+  );
+
+  for (let i = 0; i < gameBoard.board.length; i++) {
+    for (let j = 0; j < gameBoard.board[i].length; j++) {
+      if (gameBoard.board[i][j] === playerType) {
+        if (verticalCompletableScore(gameBoard, i, j) > 0) {
+          completablesArray[i][j]++;
+        }
+        if (horizontalCompletableScore(gameBoard, i, j) > 0) {
+          completablesArray[i][j]++;
+        }
+        if (diagonalCompletableScore(gameBoard, i, j) > 0) {
+          completablesArray[i][j]++;
+        }
+        if (antiDiagonalCompletableScore(gameBoard, i, j) > 0) {
+          completablesArray[i][j]++;
+        }
+      }
+    }
+  }
+
+  return completablesArray;
 }
 
 //Get horizontal completable adjacent number of a point
