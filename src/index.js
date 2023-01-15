@@ -56,19 +56,19 @@ function getPlayersFromUser(gameMode) {
       players[1] = new HumanPlayer(gameBoard, playerTypes.minimizing);
       break;
     case '2':
-      console.log('\nFirst AI Player (Player X): ');
+      console.log('\nFirst (Maximizing) AI Player (Player X): ');
       players[0] = getAIPlayerFromUser(playerTypes.maximizing);
 
-      console.log('\nSecond AI Player (Player O): ');
+      console.log('\nSecond (Minimizing) AI Player (Player O): ');
       players[1] = getAIPlayerFromUser(playerTypes.minimizing);
       break;
     case '3':
       players[0] = new HumanPlayer(gameBoard, playerTypes.maximizing);
-      console.log('\nAI Player (Player O): ');
+      console.log('\nMinimizing AI Player (Player O): ');
       players[1] = getAIPlayerFromUser(playerTypes.minimizing);
       break;
     case '4':
-      console.log('\nAI Player (Player X): ');
+      console.log('\nMaximizing AI Player (Player X): ');
       players[0] = getAIPlayerFromUser(playerTypes.maximizing);
       players[1] = new HumanPlayer(gameBoard, playerTypes.minimizing);
       break;
@@ -105,14 +105,14 @@ function getAIPlayerFromUser(playerType) {
 function playGame(players) {
   while (true) {
     for (const player of players) {
-      console.log(`\n\nPlayer ${player.playerType} plays...`);
+      console.log(`\n\nPlayer ${player.playerType} Plays...`);
       console.log(player.gameBoard.toString());
       player.takeTurn();
 
       if (gameBoard.isWinning(player.playerType)) {
         console.log(gameBoard.toString());
         console.log(
-          `Player ${player.playerType} won the game... (${
+          `Player ${player.playerType} Won the Game. (${
             player.playerType === 'X' ? 'First Player' : 'Second Player'
           })`
         );
@@ -120,7 +120,7 @@ function playGame(players) {
       }
 
       if (gameBoard.isDraw()) {
-        console.log('Game Resulted in Draw');
+        console.log('Game Resulted in Draw.');
         return;
       }
     }

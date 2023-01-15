@@ -3,8 +3,8 @@ import Player from './Player.js';
 const prompt = promptSync();
 
 export default class HumanPlayer extends Player {
-  constructor(gameNode, playerType) {
-    super(gameNode, playerType);
+  constructor(gameBoard, playerType) {
+    super(gameBoard, playerType);
   }
 
   takeTurn() {
