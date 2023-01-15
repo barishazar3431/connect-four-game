@@ -1,6 +1,6 @@
 import promptSync from 'prompt-sync';
 import HumanPlayer from './players/HumanPlayer.js';
-import ComputerPlayer from './players/ComputerPlayer.js';
+import AIPlayer from './players/AIPlayer.js';
 import GameBoard from './GameBoard.js';
 import { playerTypes } from './players/Player.js';
 import {
@@ -85,12 +85,7 @@ function getAIPlayerFromUser(playerType) {
   const heuristicFunctionKey = prompt(' Select 1-3: ');
   const heuristicFunction = heuristicFunctions[heuristicFunctionKey];
 
-  return new ComputerPlayer(
-    gameBoard,
-    playerType,
-    numOfPlies,
-    heuristicFunction
-  );
+  return new AIPlayer(gameBoard, playerType, numOfPlies, heuristicFunction);
 }
 
 function playGame(players) {

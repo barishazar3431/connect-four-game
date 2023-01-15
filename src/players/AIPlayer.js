@@ -1,6 +1,6 @@
 import Player from './Player.js';
 
-export default class ComputerPlayer extends Player {
+export default class AIPlayer extends Player {
   constructor(gameBoard, playerType, plies, evaluationFunction) {
     super(gameBoard, playerType);
     this.plies = plies;
@@ -17,7 +17,11 @@ export default class ComputerPlayer extends Player {
   getBestChild() {
     const childrenBoards = this.gameBoard.getChildrenBoards(this.playerType);
     childrenBoards.forEach((child, i) => {
-      const score = child.minimax(this.evaluationFunction ,this.plies, !this.isMaximizing);
+      const score = child.minimax(
+        this.evaluationFunction,
+        this.plies,
+        !this.isMaximizing
+      );
       console.log(score);
       child.minimaxScore = score;
     });
