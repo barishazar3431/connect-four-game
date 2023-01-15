@@ -50,6 +50,9 @@ export function centralityScore(gameBoard) {
   return score;
 }
 
+/**This is the combination of the completable score and
+ * centrality score.
+ */
 export function completableCentralityScore(gameBoard) {
   const maximizingCompletableArray = getCompletableMatrix(
     gameBoard,
