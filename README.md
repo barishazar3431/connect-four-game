@@ -1,6 +1,6 @@
 # Connect Four AI Implementation
 
-This project was made as part of the CSE4082 - Introduction to Artificial Intelligence Course at Marmara University (Instructor: Ali Haydar Özer). 
+This project was done as part of the CSE4082 - Introduction to Artificial Intelligence Course at Marmara University (Instructor: Ali Haydar Özer). 
 
 ## About the Project
 You can find the details of the project under Project Files folder.
