@@ -22,11 +22,35 @@ export const initialBoard = [
 
 const gameBoard = new GameBoard(initialBoard);
 
-function configureTheGame() {
-  const gameNode = getGameNodeFromUser();
+function configureTheGame() {  
+  try {
+    const gameMode = getGameModeFromUser();
+    const players = getPlayersFromUser(gameMode);
+    playGame(players);
+  } catch (err) {
+    console.log(err.message);
+    console.log('Try Again...');
+    configureTheGame();
+  }
+}
 
+function getGameModeFromUser() {
+  console.log(`
+  Welcome to the Connect4 Game...
+  Select the Game Mode:
+  1 - Human vs Human
+  2 - AI vs AI
+  3 - Human vs AI
+  4 - AI vs Human
+  `);
+  const gameMode = prompt('Select 1-4: ');
+
+  return gameMode;
+}
+
+function getPlayersFromUser(gameMode) {
   const players = [];
-  switch (gameNode) {
+  switch (gameMode) {
     case '1':
       players[0] = new HumanPlayer(gameBoard, playerTypes.maximizing);
       players[1] = new HumanPlayer(gameBoard, playerTypes.minimizing);
@@ -49,24 +73,10 @@ function configureTheGame() {
       players[1] = new HumanPlayer(gameBoard, playerTypes.minimizing);
       break;
     default:
-      throw new Error('Please Choose a Valid Option From 1 to 4');
+      throw new Error('\nPlease Choose a Valid Option From 1 to 4');
   }
 
-  playGame(players);
-}
-
-function getGameNodeFromUser() {
-  console.log(`
-  Welcome to the Connect4 Game...
-  Select the Game Mode:
-  1 - Human vs Human
-  2 - AI vs AI
-  3 - Human vs AI (Human Starts)
-  4 - AI vs Human (AI Starts)
-  `);
-  const gameMode = prompt('Select 1-4: ');
-
-  return gameMode;
+  return players;
 }
 
 function getAIPlayerFromUser(playerType) {
@@ -84,6 +94,10 @@ function getAIPlayerFromUser(playerType) {
   `);
   const heuristicFunctionKey = prompt(' Select 1-3: ');
   const heuristicFunction = heuristicFunctions[heuristicFunctionKey];
+
+  if (!heuristicFunction) {
+    throw new Error('\nPlease Choose a valid Evaluation Heuristic From 1 to 3');
+  }
 
   return new AIPlayer(gameBoard, playerType, numOfPlies, heuristicFunction);
 }
