@@ -1,4 +1,5 @@
-import Player from './Player.js';
+import Player, {playerTypes} from './Player.js';
+
 
 export default class AIPlayer extends Player {
   constructor(gameBoard, playerType, plies, evaluationFunction) {
@@ -17,11 +18,7 @@ export default class AIPlayer extends Player {
   getBestChild() {
     const childrenBoards = this.gameBoard.getChildrenBoards(this.playerType);
     childrenBoards.forEach((child, i) => {
-      const score = child.minimax(
-        this.evaluationFunction,
-        this.plies,
-        !this.isMaximizing
-      );
+      const score = this.minimax(child, this.plies, !this.isMaximizing);
       console.log(score);
       child.minimaxScore = score;
     });
@@ -32,6 +29,74 @@ export default class AIPlayer extends Player {
       return childrenBoards[0];
     } else {
       return childrenBoards[childrenBoards.length - 1];
+    }
+  }
+
+  minimax(
+    gameBoard,
+    depth,
+    isMaximizing,
+    alpha = Number.NEGATIVE_INFINITY,
+    beta = Number.POSITIVE_INFINITY
+  ) {
+    if (gameBoard.isDraw()) {
+      return 0;
+    }
+
+    if (gameBoard.isWinning(playerTypes.maximizing)) {
+      return 9999 * (gameBoard.emptySlotCount() + 1);
+    }
+
+    if (gameBoard.isWinning(playerTypes.minimizing)) {
+      return -9999 * (gameBoard.emptySlotCount() + 1);
+    }
+
+    if (depth === 0) {
+      return this.evaluationFunction(gameBoard);
+    }
+
+    if (isMaximizing) {
+      let maxEvaluation = Number.NEGATIVE_INFINITY;
+
+      const childrenBoards = gameBoard.getChildrenBoards(
+        playerTypes.maximizing
+      );
+      for (const childBoard of childrenBoards) {
+        const evaluation = this.minimax(
+          childBoard,
+          depth - 1,
+          false,
+          alpha,
+          beta
+        );
+        maxEvaluation = Math.max(maxEvaluation, evaluation);
+        alpha = Math.max(alpha, evaluation);
+        if (beta <= alpha) {
+          break;
+        }
+      }
+      return maxEvaluation;
+    } else {
+      let minEvaluation = Number.POSITIVE_INFINITY;
+
+      const childrenBoards = gameBoard.getChildrenBoards(
+        playerTypes.minimizing
+      );
+      for (const childBoard of childrenBoards) {
+        const evaluation = this.minimax(
+          childBoard,
+          depth - 1,
+          true,
+          alpha,
+          beta
+        );
+        minEvaluation = Math.min(minEvaluation, evaluation);
+        beta = Math.min(beta, evaluation);
+        if (beta <= alpha) {
+          break;
+        }
+      }
+      return minEvaluation;
     }
   }
 }

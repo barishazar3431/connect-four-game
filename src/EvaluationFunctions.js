@@ -5,6 +5,12 @@ import {
   getCompletableMatrix,
 } from './utils.js';
 
+/**Returns the completable score of the given gameBoard.
+ * A piece is completable, if you can form a 4 connected pieces
+ * that passes within that piece. The maximum score you can get from
+ * an individual piece is 4 (completable for all directions), and the less is
+ * 0 meaning that it is surrounded by enemy pieces and can't be a part of a solution
+ */
 export function completableScore(gameBoard) {
   const maximizingCompletableSum = getCompletableSumOfPlayerType(
     gameBoard,
@@ -19,6 +25,11 @@ export function completableScore(gameBoard) {
   return score;
 }
 
+/**Returns the centrality score of the given GameBoard. We use the getProbabilities array
+ * function to generate the 2d probabilities array for the gameboard by traversing
+ * through it in four directions. After that, we increment the score for each maximizing piece
+ * and decrement for each minimizing piece by looking at the probabilities of their indices.
+ */
 export function centralityScore(gameBoard) {
   let probabilities = getProbabilitiesArray();
 

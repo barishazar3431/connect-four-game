@@ -77,58 +77,6 @@ export default class GameBoard {
     return childrenBoards;
   }
 
-  minimax(
-    evaluationFunction,
-    depth,
-    isMaximizing,
-    alpha = Number.NEGATIVE_INFINITY,
-    beta = Number.POSITIVE_INFINITY
-  ) {
-    if (this.isDraw()) {
-      return 0;
-    }
-
-    if (this.isWinning(playerTypes.maximizing)) {
-      return 9999 * (this.emptySlotCount() + 1);
-    }
-
-    if (this.isWinning(playerTypes.minimizing)) {
-      return -9999 * (this.emptySlotCount() + 1);
-    }
-
-    if (depth === 0) {
-      return evaluationFunction(this);
-    }
-
-    if (isMaximizing) {
-      let maxEvaluation = Number.NEGATIVE_INFINITY;
-
-      const childrenNodes = this.getChildrenBoards(playerTypes.maximizing);
-      for (const childNode of childrenNodes) {
-        const evaluation = childNode.minimax(evaluationFunction, depth - 1, false, alpha, beta);
-        maxEvaluation = Math.max(maxEvaluation, evaluation);
-        alpha = Math.max(alpha, evaluation);
-        if (beta <= alpha) {
-          break;
-        }
-      }
-      return maxEvaluation;
-    } else {
-      let minEvaluation = Number.POSITIVE_INFINITY;
-
-      const childrenNodes = this.getChildrenBoards(playerTypes.minimizing);
-      for (const childNode of childrenNodes) {
-        const evaluation = childNode.minimax(evaluationFunction, depth - 1, true, alpha, beta);
-        minEvaluation = Math.min(minEvaluation, evaluation);
-        beta = Math.min(beta, evaluation);
-        if (beta <= alpha) {
-          break;
-        }
-      }
-      return minEvaluation;
-    }
-  }
-
   isDraw() {
     return this.board[0].every((slot, i) => this.isPositionFull(i + 1));
   }
