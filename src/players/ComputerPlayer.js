@@ -1,5 +1,4 @@
 import Player from './Player.js';
-import { playerTypes } from './Player.js';
 
 export default class ComputerPlayer extends Player {
   constructor(gameBoard, playerType, plies, evaluationFunction) {

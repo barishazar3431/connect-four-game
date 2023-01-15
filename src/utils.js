@@ -1,7 +1,7 @@
-import { initialBoard } from './game.js';
+import { initialBoard } from './index.js';
 
 /**
- * Traverses through the board array and returns the probability of
+ * Traverses through the board array and returns the 2d array of the probabilities that
  * having a solution that passes through each position
  */
 export function getProbabilitiesArray() {
@@ -11,8 +11,8 @@ export function getProbabilitiesArray() {
 
   horizontalProbabilities(probabilitiesArray);
   verticalProbabilities(probabilitiesArray);
-  isWinningDiagonal(probabilitiesArray);
-  isWinningAntidiagonal(probabilitiesArray);
+  diagonalProbabilities(probabilitiesArray);
+  antiDiagonalProbabilities(probabilitiesArray);
 
   return probabilitiesArray;
 }
@@ -39,7 +39,7 @@ function verticalProbabilities(probabilitiesArray) {
   }
 }
 
-function isWinningDiagonal(probabilitiesArray) {
+function diagonalProbabilities(probabilitiesArray) {
   for (let i = 0; i < probabilitiesArray.length - 3; i++) {
     for (let j = 0; j < probabilitiesArray[i].length - 3; j++) {
       probabilitiesArray[i][j]++;
@@ -50,7 +50,7 @@ function isWinningDiagonal(probabilitiesArray) {
   }
 }
 
-function isWinningAntidiagonal(probabilitiesArray) {
+function antiDiagonalProbabilities(probabilitiesArray) {
   for (let i = 0; i < probabilitiesArray.length - 3; i++) {
     for (let j = probabilitiesArray[i].length - 1; j > 2; j--) {
       probabilitiesArray[i][j]++;
