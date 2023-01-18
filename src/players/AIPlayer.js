@@ -1,5 +1,4 @@
-import Player, {playerTypes} from './Player.js';
-
+import Player, { playerTypes } from './Player.js';
 
 export default class AIPlayer extends Player {
   constructor(gameBoard, playerType, plies, evaluationFunction) {
@@ -23,13 +22,13 @@ export default class AIPlayer extends Player {
       child.minimaxScore = score;
     });
 
-    childrenBoards.sort((a, b) => b.minimaxScore - a.minimaxScore);
+    childrenBoards.sort((a, b) => {
+      return this.isMaximizing
+        ? b.minimaxScore - a.minimaxScore
+        : a.minimaxScore - b.minimaxScore;
+    });
 
-    if (this.isMaximizing) {
-      return childrenBoards[0];
-    } else {
-      return childrenBoards[childrenBoards.length - 1];
-    }
+    return childrenBoards[0];
   }
 
   minimax(
