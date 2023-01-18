@@ -1,20 +1,18 @@
-import { initialBoard } from './index.js';
+import {initialBoard} from './index.js';
 
 /**
  * Traverses through the board array and returns the 2d array of the probabilities that
  * having a solution that passes through each position
  */
-export function getProbabilitiesArray() {
-  const probabilitiesArray = Array.from({ length: initialBoard.length }, () =>
-    Array(initialBoard[0].length).fill(0)
-  );
+export function getProbabilitiesMatrix() {
+  const probabilitiesMatrix = initialBoard.map(row => row.slice()); //Copy the initial board.
+  
+  horizontalProbabilities(probabilitiesMatrix);
+  verticalProbabilities(probabilitiesMatrix);
+  diagonalProbabilities(probabilitiesMatrix);
+  antiDiagonalProbabilities(probabilitiesMatrix);
 
-  horizontalProbabilities(probabilitiesArray);
-  verticalProbabilities(probabilitiesArray);
-  diagonalProbabilities(probabilitiesArray);
-  antiDiagonalProbabilities(probabilitiesArray);
-
-  return probabilitiesArray;
+  return probabilitiesMatrix;
 }
 
 function horizontalProbabilities(probabilitiesArray) {
@@ -62,54 +60,42 @@ function antiDiagonalProbabilities(probabilitiesArray) {
 }
 
 /**Returns The Sum of all the completable tokens for the given playerType*/
-export function getCompletableSumOfPlayerType(gameBoard, playerType) {
-  const adjacentCounts = new Array(4).fill(0);
+export function getCompletableSumOfPlayer(gameBoard, playerType) {
+  const completableMatrix = getCompletableMatrixOfPlayer(gameBoard, playerType);
 
+  let completableSum = 0;
   for (let i = 0; i < gameBoard.board.length; i++) {
     for (let j = 0; j < gameBoard.board[i].length; j++) {
-      if (gameBoard.board[i][j] === playerType) {
-        adjacentCounts[verticalCompletableScore(gameBoard, i, j)]++;
-        adjacentCounts[horizontalCompletableScore(gameBoard, i, j)]++;
-        adjacentCounts[diagonalCompletableScore(gameBoard, i, j)]++;
-        adjacentCounts[antiDiagonalCompletableScore(gameBoard, i, j)]++;
-      }
+      completableSum += completableMatrix[i][j];
     }
   }
-
-  //Normalize counts which are repeated and sum each of them
-  const completableSum = adjacentCounts
-    .slice(1)
-    .map((count, i) => count / (i + 1))
-    .reduce((a, b) => a + b, 0);
 
   return completableSum;
 }
 
-export function getCompletableMatrix(gameBoard, playerType) {
-  const completablesArray = Array.from({ length: initialBoard.length }, () =>
-    Array(initialBoard[0].length).fill(0)
-  );
+export function getCompletableMatrixOfPlayer(gameBoard, playerType) {
+  const completableMatrix = initialBoard.map(row => row.slice()); //Copy the initial board.
 
   for (let i = 0; i < gameBoard.board.length; i++) {
     for (let j = 0; j < gameBoard.board[i].length; j++) {
       if (gameBoard.board[i][j] === playerType) {
         if (verticalCompletableScore(gameBoard, i, j) > 0) {
-          completablesArray[i][j]++;
+          completableMatrix[i][j]++;
         }
         if (horizontalCompletableScore(gameBoard, i, j) > 0) {
-          completablesArray[i][j]++;
+          completableMatrix[i][j]++;
         }
         if (diagonalCompletableScore(gameBoard, i, j) > 0) {
-          completablesArray[i][j]++;
+          completableMatrix[i][j]++;
         }
         if (antiDiagonalCompletableScore(gameBoard, i, j) > 0) {
-          completablesArray[i][j]++;
+          completableMatrix[i][j]++;
         }
       }
     }
   }
 
-  return completablesArray;
+  return completableMatrix;
 }
 
 //Get horizontal completable adjacent number of a point

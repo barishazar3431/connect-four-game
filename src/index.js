@@ -8,6 +8,7 @@ import {
   completableCentralityScore,
   completableScore,
 } from './EvaluationFunctions.js';
+import { getProbabilitiesMatrix } from './utils.js';
 const prompt = promptSync();
 
 export const initialBoard = [
@@ -19,6 +20,7 @@ export const initialBoard = [
   [0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
 ];
+export const probabilitiesMatrix = getProbabilitiesMatrix(initialBoard); //Create the probabilities matrix for the initial board.
 
 const gameBoard = new GameBoard(initialBoard);
 

@@ -1,8 +1,8 @@
+import { probabilitiesMatrix } from './index.js';
 import { playerTypes } from './players/Player.js';
 import {
-  getCompletableSumOfPlayerType,
-  getProbabilitiesArray,
-  getCompletableMatrix,
+  getCompletableSumOfPlayer,
+  getCompletableMatrixOfPlayer,
 } from './utils.js';
 
 /**Returns the completable score of the given gameBoard.
@@ -12,11 +12,11 @@ import {
  * 0 meaning that it is surrounded by enemy pieces and can't be a part of a solution
  */
 export function completableScore(gameBoard) {
-  const maximizingCompletableSum = getCompletableSumOfPlayerType(
+  const maximizingCompletableSum = getCompletableSumOfPlayer(
     gameBoard,
     playerTypes.maximizing
   );
-  const minimizingCompletableSum = getCompletableSumOfPlayerType(
+  const minimizingCompletableSum = getCompletableSumOfPlayer(
     gameBoard,
     playerTypes.minimizing
   );
@@ -31,18 +31,16 @@ export function completableScore(gameBoard) {
  * and decrement for each minimizing piece by looking at the probabilities of their indices.
  */
 export function centralityScore(gameBoard) {
-  let probabilities = getProbabilitiesArray();
-
   let score = 0;
   for (let i = 0; i < gameBoard.board.length; i++) {
     for (let j = 0; j < gameBoard.board[i].length; j++) {
       const currentToken = gameBoard.board[i][j];
       if (currentToken === playerTypes.maximizing) {
-        score += probabilities[i][j];
+        score += probabilitiesMatrix[i][j];
       }
 
       if (currentToken === playerTypes.minimizing) {
-        score -= probabilities[i][j];
+        score -= probabilitiesMatrix[i][j];
       }
     }
   }
@@ -54,22 +52,24 @@ export function centralityScore(gameBoard) {
  * centrality score.
  */
 export function completableCentralityScore(gameBoard) {
-  const maximizingCompletableArray = getCompletableMatrix(
+  const maximizingCompletableMatrix = getCompletableMatrixOfPlayer(
     gameBoard,
     playerTypes.maximizing
   );
-  const minimizingCompletableArray = getCompletableMatrix(
+  const minimizingCompletableMatrix = getCompletableMatrixOfPlayer(
     gameBoard,
     playerTypes.minimizing
   );
 
-  const probabilities = getProbabilitiesArray();
-
   let score = 0;
-  for (let i = 0; i < probabilities.length; i++) {
-    for (let j = 0; j < probabilities[i].length; j++) {
-      score += probabilities[i][j] * maximizingCompletableArray[i][j];
-      score -= probabilities[i][j] * minimizingCompletableArray[i][j];
+  for (let i = 0; i < probabilitiesMatrix.length; i++) {
+    for (let j = 0; j < probabilitiesMatrix[i].length; j++) {
+      if (maximizingCompletableMatrix[i][j] > 0) {
+        score += probabilitiesMatrix[i][j] * maximizingCompletableMatrix[i][j];
+      }
+      if (minimizingCompletableMatrix[i][j] > 0) {
+        score -= probabilitiesMatrix[i][j] * minimizingCompletableMatrix[i][j];
+      }
     }
   }
 
