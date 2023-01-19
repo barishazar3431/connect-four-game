@@ -4,7 +4,7 @@ export default class AIPlayer extends Player {
   constructor(gameBoard, playerType, plies, evaluationFunction) {
     super(gameBoard, playerType);
     this.plies = plies;
-    this.isMaximizing = this.playerType === 'X';
+    this.isMaximizing = this.playerType === playerTypes.maximizing;
     this.evaluationFunction = evaluationFunction;
   }
 
