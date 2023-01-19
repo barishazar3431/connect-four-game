@@ -38,12 +38,8 @@ export default class AIPlayer extends Player {
     alpha = Number.NEGATIVE_INFINITY,
     beta = Number.POSITIVE_INFINITY
   ) {
-    if (gameBoard.isGameOver()) {
-      return this.getGameOverScore(gameBoard);
-    }
-
-    if (depth === 0) {
-      return this.evaluationFunction(gameBoard);
+    if (gameBoard.isGameOver() || depth === 0) {
+      return this.getStaticEvaluationOfBoard(gameBoard);
     }
 
     if (isMaximizing) {
@@ -91,7 +87,7 @@ export default class AIPlayer extends Player {
     }
   }
 
-  getGameOverScore(gameBoard) {
+  getStaticEvaluationOfBoard(gameBoard) {
     if (gameBoard.isDraw()) {
       return 0;
     }
@@ -103,5 +99,7 @@ export default class AIPlayer extends Player {
     if (gameBoard.isWinning(playerTypes.minimizing)) {
       return -9999 * (gameBoard.emptySlotCount() + 1);
     }
+
+    return this.evaluationFunction(gameBoard);
   }
 }
