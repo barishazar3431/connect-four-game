@@ -52,14 +52,6 @@ export default class GameBoard {
     return count;
   }
 
-  isGameOver() {
-    return (
-      this.isDraw() ||
-      this.isWinning(playerTypes.maximizing) ||
-      this.isWinning(playerTypes.minimizing)
-    );
-  }
-
   getChildrenBoards(playerType) {
     const childrenBoards = [];
 
@@ -76,6 +68,14 @@ export default class GameBoard {
       childrenBoards.push(newBoardClass);
     }
     return childrenBoards;
+  }
+
+  isGameOver() {
+    return (
+      this.isDraw() ||
+      this.isWinning(playerTypes.maximizing) ||
+      this.isWinning(playerTypes.minimizing)
+    );
   }
 
   isDraw() {
