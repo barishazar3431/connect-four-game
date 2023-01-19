@@ -70,14 +70,6 @@ export default class GameBoard {
     return childrenBoards;
   }
 
-  isGameOver() {
-    return (
-      this.isDraw() ||
-      this.isWinning(playerTypes.maximizing) ||
-      this.isWinning(playerTypes.minimizing)
-    );
-  }
-
   isDraw() {
     return this.board[0].every((slot, i) => this.isPositionFull(i + 1));
   }
