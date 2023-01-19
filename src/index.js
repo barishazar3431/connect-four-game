@@ -108,10 +108,11 @@ function playGame(players) {
   while (true) {
     for (const player of players) {
       console.log(`\n\nPlayer ${player.playerType} Plays...`);
-      console.log(player.gameBoard.toString());
+      console.log(player.gameBoard.toString(), '\n');
       player.takeTurn();
 
       if (gameBoard.isWinning(player.playerType)) {
+        console.log('\n');
         console.log(gameBoard.toString());
         console.log(
           `Player ${player.playerType} Won the Game. (${
@@ -122,6 +123,8 @@ function playGame(players) {
       }
 
       if (gameBoard.isDraw()) {
+        console.log('\n');
+        console.log(gameBoard.toString());
         console.log('Game Resulted in Draw.');
         return;
       }

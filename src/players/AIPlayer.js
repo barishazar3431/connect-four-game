@@ -18,7 +18,7 @@ export default class AIPlayer extends Player {
     const childrenBoards = this.gameBoard.getChildrenBoards(this.playerType);
     childrenBoards.forEach((child, i) => {
       const score = this.minimax(child, this.plies, !this.isMaximizing);
-      console.log(score);
+      console.log(`${score}`);
       child.minimaxScore = score;
     });
 

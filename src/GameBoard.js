@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { playerTypes } from './players/Player.js';
 
 export default class GameBoard {
@@ -160,7 +161,13 @@ export default class GameBoard {
     for (let i = 0; i < this.board.length; i++) {
       for (let j = 0; j < this.board[0].length; j++) {
         const boardValue = this.board[i][j];
-        string += `${boardValue === 0 ? ' ' : boardValue}|`;
+        string += `${
+          boardValue === 0
+            ? ' '
+            : boardValue === playerTypes.maximizing
+            ? chalk.white.bgRed.bold(boardValue)
+            : chalk.black.bgYellowBright.bold(boardValue)
+        }${'|'}`;
       }
       string += '\n';
     }
